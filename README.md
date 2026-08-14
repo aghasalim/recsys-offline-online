@@ -2,10 +2,10 @@
 
 Built by a third-year Applied Computer Science (AI) student.
 
-> **Status: in progress.** Milestones 1–5 are done — ground truth, naive
-> evaluation, corrected estimators, stress tests, and an evaluation gate that
-> refuses to report a number when the diagnostics say it would be meaningless.
-> The final write-up remains. Numbers below are real and reproducible.
+> **Status: complete.** All six milestones done. Every number here was produced
+> by the code in this repo; the decision trail, including the things I got
+> wrong, is in [NOTES.md](NOTES.md). The project ends on one open problem, stated
+> rather than hidden: a confidence interval that survives heavy-tailed weights.
 
 The problem with a recommender portfolio project is that the metric you report
 is not the thing anyone cares about. You train a ranker, you report NDCG@10 or
@@ -24,6 +24,30 @@ estimate computed from one policy's logs can be graded against it.
 The whole project is one question: **using only the random logs, can you work
 out how well BTS performs?** The answer is written down before any estimator
 runs.
+
+```mermaid
+flowchart TB
+    subgraph T["Known answer, measured once"]
+        A[BTS logs<br/>12.4M rows] --> B[true CTR 0.00495]
+        C[random logs<br/>1.37M rows] --> D[true CTR 0.00347]
+    end
+    subgraph E["Estimate it from the random logs alone"]
+        C --> F[naive<br/>replay / DM / mean]
+        C --> G[corrected<br/>IPS / SNIPS / DR]
+        H[logged propensities] --> G
+    end
+    F -->|−30% to +54%| I{{graded against<br/>the known answer}}
+    G -->|+1.6% to +1.7%| I
+    B --> I
+    subgraph J["The gate — milestone 5"]
+        K[unlogged target mass]
+        L[effective sample size]
+        M[effective clicks]
+    end
+    G --> J
+    J -->|checks pass| N[report value + interval]
+    J -->|checks fail| O[refuse, and say why]
+```
 
 ---
 
@@ -358,16 +382,36 @@ dropping it, which is most of why 7 GB compresses to 78 MB.
       curves, and broken support — plus which diagnostics actually detect it.
 - [x] **5 — Deployment.** An evaluation gate that refuses on bad diagnostics,
       validated against known answers, plus an interactive demo and Docker.
-- [ ] **6 — Docs.** Full write-up with the failures kept in.
+- [x] **6 — Docs.** Architecture, full write-up, and the decision trail in
+      [NOTES.md](NOTES.md) with every wrong turn kept in.
 
-Milestone 6 is the write-up, plus the one open problem this left behind: a
-confidence interval that survives heavy-tailed importance weights, since the
-gate's single false accept is a coverage miss and not a support failure.
+## What I would do next
+
+1. **A confidence interval that survives heavy tails.** This is the one open
+   problem and the gate's only false accept: at ESS 0.16% and max weight 12,500
+   the normal-approximation interval is marginally anti-conservative. A
+   percentile bootstrap or empirical-Bernstein bound would not assume a light
+   tail. It is the first thing I would build next.
+2. **Learn a policy, not just evaluate one.** Everything here evaluates BTS. Off-
+   policy *learning* — optimising a policy against these logs — is the natural
+   sequel, and the gate is what would stop it from optimising into the region
+   where the estimates are fiction.
+3. **Contextual target policies.** π_BTS is modelled as context-free but
+   position-dependent, matching the Open Bandit benchmark. Using the user
+   features would make the target policy contextual and the weights less
+   well-behaved, which is closer to reality.
+4. **A second dataset.** Every conclusion here rests on one 7-day window from
+   one retailer. The support finding should replicate; the specific numbers
+   should not be assumed to.
 
 ## Stack
 
-Python 3.12, pandas, scikit-learn, SciPy, NumPy, matplotlib, PyArrow. Managed
-with `uv`, linted with `ruff`.
+Python 3.12, pandas, scikit-learn, SciPy, NumPy, matplotlib, PyArrow, Streamlit,
+Docker. Managed with `uv`, linted with `ruff`, four self-check suites in CI.
+
+Every self-check asserts a metric **fails** on a deliberately wrong input rather
+than merely returning a number — they need no dataset, so CI does not depend on
+an 11 GB download, and they caught two real bugs during development.
 
 ## Data
 
