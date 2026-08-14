@@ -1,0 +1,175 @@
+{
+ "campaign": "all",
+ "forward": {
+  "label": "random_logs -> evaluate bts",
+  "n": 1374327,
+  "truth": 0.004953225649823585,
+  "ips": {
+   "value": 0.0050368443920628305,
+   "se": 0.00012107208031165988,
+   "ci95": [
+    0.004799543114651977,
+    0.005274145669473684
+   ],
+   "rel_error": 0.016881674317063222,
+   "covers_truth": true
+  },
+  "snips": {
+   "value": 0.005030268465837179,
+   "se": 0.00012066528183216067,
+   "ci95": [
+    0.004793764513446144,
+    0.005266772418228214
+   ],
+   "rel_error": 0.01555406950142424,
+   "covers_truth": true
+  },
+  "ess": 367932.95878946874,
+  "ess_frac": 0.2677186424988149,
+  "max_weight": 9.641884128118862,
+  "p99_weight": 7.642390369406915,
+  "target_mass_on_unlogged_actions": 0.0
+ },
+ "reverse": {
+  "label": "bts_logs -> evaluate random",
+  "n": 12357200,
+  "truth": 0.0034693344451502445,
+  "ips": {
+   "value": 0.0034337571146597218,
+   "se": 8.523246677506096e-05,
+   "ci95": [
+    0.0032667014797806023,
+    0.0036008127495388413
+   ],
+   "rel_error": -0.010254799891159516,
+   "covers_truth": true
+  },
+  "snips": {
+   "value": 0.0032973718032769,
+   "se": 8.486311881533697e-05,
+   "ci95": [
+    0.0031310400903988398,
+    0.0034637035161549606
+   ],
+   "rel_error": -0.049566464286465495,
+   "covers_truth": false
+  },
+  "ess": 19909.595440436362,
+  "ess_frac": 0.001611173683394002,
+  "max_weight": 12500.000031559466,
+  "p99_weight": 12.953367690128236,
+  "target_mass_on_unlogged_actions": 0.0
+ },
+ "sample_curve_reverse": [
+  {
+   "frac": 0.001,
+   "n": 12357,
+   "value": 0.0036085877965323938,
+   "rel_error": 0.04013834745070777,
+   "ci_width": 0.003992071883343995,
+   "covers_truth": true,
+   "ess_frac": 0.020401860455700062
+  },
+  {
+   "frac": 0.005,
+   "n": 61786,
+   "value": 0.002938809067359146,
+   "rel_error": -0.15291848802086971,
+   "ci_width": 0.0024419572629809866,
+   "covers_truth": true,
+   "ess_frac": 0.024656386804403782
+  },
+  {
+   "frac": 0.02,
+   "n": 247144,
+   "value": 0.0032848127137252753,
+   "rel_error": -0.05318649278189669,
+   "ci_width": 0.0012879586927906231,
+   "covers_truth": true,
+   "ess_frac": 0.001486929713930493
+  },
+  {
+   "frac": 0.1,
+   "n": 1235720,
+   "value": 0.0035304894387900338,
+   "rel_error": 0.017627298436239558,
+   "ci_width": 0.0021111421803444,
+   "covers_truth": true,
+   "ess_frac": 0.001347131903010472
+  },
+  {
+   "frac": 0.5,
+   "n": 6178600,
+   "value": 0.0034673228397429407,
+   "rel_error": -0.000579824585697053,
+   "ci_width": 0.00040737981303831574,
+   "covers_truth": true,
+   "ess_frac": 0.0014682098671209122
+  },
+  {
+   "frac": 1.0,
+   "n": 12357200,
+   "value": 0.003433757114659721,
+   "rel_error": -0.010254799891159738,
+   "ci_width": 0.00033411126975823897,
+   "covers_truth": true,
+   "ess_frac": 0.0016111736833940014
+  }
+ ],
+ "broken_support": [
+  {
+   "items_dropped": 0,
+   "n": 1374327,
+   "value": 0.0050368443920628305,
+   "rel_error": 0.016881674317063222,
+   "covers_truth": true,
+   "ess_frac": 0.2677186424988149,
+   "target_mass_on_unlogged_actions": 0.0
+  },
+  {
+   "items_dropped": 5,
+   "n": 1289782,
+   "value": 0.004009987485851148,
+   "rel_error": -0.19042907201411907,
+   "covers_truth": false,
+   "ess_frac": 0.24098379280398038,
+   "target_mass_on_unlogged_actions": 0.177425618563024
+  },
+  {
+   "items_dropped": 10,
+   "n": 1203081,
+   "value": 0.003354286400663029,
+   "rel_error": -0.32280767366564533,
+   "covers_truth": false,
+   "ess_frac": 0.20152947918496866,
+   "target_mass_on_unlogged_actions": 0.32309132239527666
+  },
+  {
+   "items_dropped": 20,
+   "n": 1031945,
+   "value": 0.0015629115177138622,
+   "rel_error": -0.6844659161107415,
+   "covers_truth": false,
+   "ess_frac": 0.25114748410307064,
+   "target_mass_on_unlogged_actions": 0.6678248220647002
+  },
+  {
+   "items_dropped": 40,
+   "n": 687282,
+   "value": 0.0005168514233607422,
+   "rel_error": -0.8956535680180145,
+   "covers_truth": false,
+   "ess_frac": 0.4762190911137432,
+   "target_mass_on_unlogged_actions": 0.8858718771254109
+  },
+  {
+   "items_dropped": 60,
+   "n": 343596,
+   "value": 0.0003400713082489096,
+   "rel_error": -0.9313434653918863,
+   "covers_truth": false,
+   "ess_frac": 0.39411865201845214,
+   "target_mass_on_unlogged_actions": 0.9518249152015891
+  }
+ ]
+}

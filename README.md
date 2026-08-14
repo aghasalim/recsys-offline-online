@@ -2,10 +2,10 @@
 
 Built by a third-year Applied Computer Science (AI) student.
 
-> **Status: in progress.** Milestones 1–3 are done — ground truth established,
-> naive evaluation measured against it, and the propensity-corrected estimators
-> built and scored. Milestone 4 is the interesting one: finding the regime where
-> the correction stops working. Numbers below are real and reproducible.
+> **Status: in progress.** Milestones 1–4 are done — ground truth, naive
+> evaluation, corrected estimators, and the stress tests that find where the
+> correction fails. Deployment and the final write-up remain. Numbers below are
+> real and reproducible.
 
 The problem with a recommender portfolio project is that the metric you report
 is not the thing anyone cares about. You train a ranker, you report NDCG@10 or
@@ -150,6 +150,82 @@ That is not a method difference: milestone 2 fit it on 5 days and this fits it
 on all 7. Comparing those two numbers directly would be comparing training set
 sizes and calling it an estimator comparison.
 
+## Where it breaks
+
+Milestone 3 was clean because evaluating **from** uniform-random logs is the
+easy direction. Nobody has those logs in production — you have logs from the
+ranker you already deployed. Three stress tests, each still graded against a
+known answer.
+
+![where it breaks](reports/stress_all.png)
+
+### 1. The direction of evaluation decides everything
+
+| setting | truth | IPS | error | max weight | ESS |
+|---|---|---|---|---|---|
+| random logs → evaluate BTS | 0.00495 | 0.00504 | +1.7% | **9.6** | 26.77% |
+| BTS logs → evaluate random | 0.00347 | 0.00343 | −1.0% | **12,500** | **0.16%** |
+
+Same dataset, same estimator, swap which policy did the logging: the largest
+importance weight goes from 9.6 to **12,500**, and effective sample size falls
+from 26.8% to **0.16%**. Twelve million logged impressions behave like about
+twenty thousand.
+
+The estimate is still accurate — −1.0% — and that is the part worth being
+careful about. It survived because 0.16% of 12.36M is still ~20,000 effective
+rows. The same weights on a smaller log would not survive, and nothing about
+the estimate itself would warn you.
+
+### 2. Confidence intervals stay honest as the data shrinks
+
+| rows | error | CI width | ESS | covers truth |
+|---|---|---|---|---|
+| 12,357 | +4.0% | 0.00399 | 2.04% | yes |
+| 61,786 | −15.3% | 0.00244 | 2.47% | yes |
+| 247,144 | −5.3% | 0.00129 | 0.15% | yes |
+| 1,235,720 | +1.8% | 0.00211 | 0.13% | yes |
+| 12,357,200 | −1.0% | 0.00033 | 0.16% | yes |
+
+The point estimate bounces around by ±15% at small n, but **every interval
+covers the truth**. The interval is doing its job: it widens to a range wider
+than the quantity being measured rather than quietly staying narrow.
+
+### 3. The diagnostic everyone uses cannot see the failure that matters
+
+Support — every action the target policy might take has some chance of
+appearing in the logs — is the assumption that breaks silently in production,
+when an item is new or was suppressed. Here I delete the highest-CTR items from
+the logs while leaving them in the target policy:
+
+| items removed | error | ESS | unlogged target mass | CI covers truth |
+|---|---|---|---|---|
+| 0 | +1.7% | 26.77% | 0.0% | yes |
+| 5 | −19.0% | 24.10% | 17.7% | **NO** |
+| 10 | −32.3% | 20.15% | 32.3% | **NO** |
+| 20 | −68.4% | 25.11% | 66.8% | **NO** |
+| 40 | **−89.6%** | **47.62%** | 88.6% | **NO** |
+| 60 | −93.1% | 39.41% | 95.2% | **NO** |
+
+**Read the ESS column against the error column.** At 40 items removed the
+estimate is wrong by −89.6% and ESS has gone *up* to 47.6% — nearly double its
+healthy value. Effective sample size is not merely blind to a support
+violation, it moves in the wrong direction, because deleting actions leaves
+behind a set of weights that look beautifully well-conditioned.
+
+The confidence intervals do not save you either: from 5 items onward they stop
+covering the truth entirely. The estimator is confidently, precisely wrong.
+
+What does work is free to compute and needs no labels: **the target policy's
+probability mass on actions that never appear in the logs.** It tracks the
+error almost exactly — 17.7% vs −19.0%, 32.3% vs −32.3%, 66.8% vs −68.4%,
+88.6% vs −89.6%. That is not a coincidence; the missing mass *is* the value
+being left uncounted.
+
+If I had to reduce this project to one operational rule: before trusting any
+off-policy estimate, check what fraction of your target policy's probability
+mass sits on actions your logs have never seen. ESS will not tell you, and the
+confidence interval will not tell you.
+
 ## Reproduce
 
 ```bash
@@ -162,6 +238,7 @@ uv run python src/roo/prepare.py --campaigns all   # 7 GB csv -> 78 MB parquet
 uv run python src/roo/eda.py all                   # the known answer + assumption checks
 uv run python src/roo/baseline.py all              # the naive estimators
 uv run python src/roo/ope.py all                   # IPS / SNIPS / DR + diagnostics
+uv run python src/roo/stress.py all                # where the correction fails
 ```
 
 Self-checks, which assert each estimator returns the arithmetically correct
@@ -170,6 +247,7 @@ answer on hand-built data:
 ```bash
 uv run python src/roo/baseline.py --self-check
 uv run python src/roo/ope.py --self-check
+uv run python src/roo/stress.py --self-check
 ```
 
 The raw logs and the derived Parquet are gitignored. 80 of the 89 raw columns
@@ -184,18 +262,16 @@ dropping it, which is most of why 7 GB compresses to 78 MB.
       each scored against the known answer.
 - [x] **3 — Corrected estimators.** IPS, self-normalised IPS, doubly robust
       with cross-fitting, plus ESS, weight tails and a clipping sweep.
-- [ ] **4 — When the correction fails.** Weight clipping, heavy tails, and the
-      regime where every estimator is untrustworthy.
+- [x] **4 — When the correction fails.** Reverse-direction weights, sample-size
+      curves, and broken support — plus which diagnostics actually detect it.
 - [ ] **5 — Deployment.** An evaluation harness plus a demo that shows the
       offline/online gap interactively.
 - [ ] **6 — Docs.** Full write-up with the failures kept in.
 
-Milestone 4 exists because milestone 3 came out clean. Evaluating from
-uniform-random logs is the easy direction: full support, bounded weights, every
-estimator agreeing. The hard direction is evaluating a *concentrated* policy's
-logs — swap logging and target, or evaluate a deterministic greedy ranker, and
-the weights are no longer bounded by 9.64. That is where IPS should break, and
-where the diagnostics built here have to earn their place.
+Milestone 5 turns the support diagnostic into something usable: an evaluation
+harness that refuses to report a number when the target policy puts meaningful
+mass on unlogged actions, rather than returning a confident estimate that is
+93% wrong.
 
 ## Stack
 
