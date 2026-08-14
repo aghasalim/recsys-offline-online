@@ -1,0 +1,320 @@
+{
+ "campaign": "all",
+ "scenarios": [
+  {
+   "name": "random logs -> evaluate BTS",
+   "group": "direction",
+   "knob": null,
+   "truth": 0.004953225649823585,
+   "value": 0.005030268465837179,
+   "ci95": [
+    0.004793764513446144,
+    0.005266772418228214
+   ],
+   "rel_error": 0.01555406950142424,
+   "n_rows": 1374327,
+   "ess": 367932.95878946874,
+   "ess_frac": 0.2677186424988149,
+   "effective_clicks": 1276.4824874343494,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 0.09403233803413866,
+   "estimator": "snips"
+  },
+  {
+   "name": "BTS logs -> evaluate random",
+   "group": "direction",
+   "knob": null,
+   "truth": 0.0034693344451502445,
+   "value": 0.0032973718032769,
+   "ci95": [
+    0.0031310400903988398,
+    0.0034637035161549606
+   ],
+   "rel_error": -0.049566464286465495,
+   "n_rows": 12357200,
+   "ess": 19909.595440436362,
+   "ess_frac": 0.001611173683394002,
+   "effective_clicks": 98.61671881318009,
+   "max_weight": 12500.000031559466,
+   "p99_weight": 12.953367690128236,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 0.10088744782299733,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 0 items missing from logs",
+   "group": "support",
+   "knob": 0,
+   "truth": 0.004953225649823585,
+   "value": 0.005030268465837179,
+   "ci95": [
+    0.004793764513446144,
+    0.005266772418228214
+   ],
+   "rel_error": 0.01555406950142424,
+   "n_rows": 1374327,
+   "ess": 367932.95878946874,
+   "ess_frac": 0.2677186424988149,
+   "effective_clicks": 1276.4824874343494,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 0.09403233803413866,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 2 items missing from logs",
+   "group": "support",
+   "knob": 2,
+   "truth": 0.004953225649823585,
+   "value": 0.004873366346933412,
+   "ci95": [
+    0.004629135397963798,
+    0.005117597295903027
+   ],
+   "rel_error": -0.016122686212169057,
+   "n_rows": 1340667,
+   "ess": 339542.6233436014,
+   "ess_frac": 0.25326395245322025,
+   "effective_clicks": 1142.4736895164765,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.05984758048782865,
+   "ci_width_over_estimate": 0.10023090060664039,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 5 items missing from logs",
+   "group": "support",
+   "knob": 5,
+   "truth": 0.004953225649823585,
+   "value": 0.004563356805641704,
+   "ci95": [
+    0.004317699440970657,
+    0.00480901417031275
+   ],
+   "rel_error": -0.07871009151294506,
+   "n_rows": 1289782,
+   "ess": 310816.55825030344,
+   "ess_frac": 0.24098379280398038,
+   "effective_clicks": 1005.1433997854022,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.177425618563024,
+   "ci_width_over_estimate": 0.10766520135674645,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 10 items missing from logs",
+   "group": "support",
+   "knob": 10,
+   "truth": 0.004953225649823585,
+   "value": 0.004336067847739012,
+   "ci95": [
+    0.004061019107492778,
+    0.004611116587985246
+   ],
+   "rel_error": -0.12459715056723775,
+   "n_rows": 1203081,
+   "ess": 242456.2873473313,
+   "ess_frac": 0.20152947918496866,
+   "effective_clicks": 742.0315423590547,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.32309132239527666,
+   "ci_width_over_estimate": 0.1268655149801933,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 20 items missing from logs",
+   "group": "support",
+   "knob": 20,
+   "truth": 0.004953225649823585,
+   "value": 0.0035490327273473192,
+   "ci95": [
+    0.00329793806045539,
+    0.0038001273942392484
+   ],
+   "rel_error": -0.28349060223538936,
+   "n_rows": 1031945,
+   "ess": 259170.3904827432,
+   "ess_frac": 0.25114748410307064,
+   "effective_clicks": 706.4778727819377,
+   "max_weight": 5.541772260463973,
+   "p99_weight": 5.260604181520424,
+   "unlogged_target_mass": 0.6678248220647002,
+   "ci_width_over_estimate": 0.1415003389273374,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 40 items missing from logs",
+   "group": "support",
+   "knob": 40,
+   "truth": 0.004953225649823585,
+   "value": 0.002274051544461159,
+   "ci95": [
+    0.0021090664374534772,
+    0.0024390366514688406
+   ],
+   "rel_error": -0.5408948218334951,
+   "n_rows": 687282,
+   "ess": 327296.80937883566,
+   "ess_frac": 0.4762190911137432,
+   "effective_clicks": 692.4225584793826,
+   "max_weight": 1.457308259873043,
+   "p99_weight": 1.3543149140729929,
+   "unlogged_target_mass": 0.8858718771254109,
+   "ci_width_over_estimate": 0.14510234599521818,
+   "estimator": "snips"
+  },
+  {
+   "name": "top 60 items missing from logs",
+   "group": "support",
+   "knob": 60,
+   "truth": 0.004953225649823585,
+   "value": 0.0017883227448740062,
+   "ci95": [
+    0.0015560654335065225,
+    0.00202058005624149
+   ],
+   "rel_error": -0.6389579495661177,
+   "n_rows": 343596,
+   "ess": 135417.59235893207,
+   "ess_frac": 0.39411865201845214,
+   "effective_clicks": 221.10056378235166,
+   "max_weight": 1.457308259873043,
+   "p99_weight": 1.457308259873043,
+   "unlogged_target_mass": 0.9518249152015891,
+   "ci_width_over_estimate": 0.2597487640675812,
+   "estimator": "snips"
+  },
+  {
+   "name": "n = 69",
+   "group": "sample_size",
+   "knob": 69,
+   "truth": 0.004953225649823585,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "rel_error": -1.0,
+   "n_rows": 69,
+   "ess": 23.580475075870105,
+   "ess_frac": 0.3417460155923204,
+   "effective_clicks": 0.0,
+   "max_weight": 7.588137358000408,
+   "p99_weight": 6.456606916365814,
+   "unlogged_target_mass": 0.7410287134379749,
+   "ci_width_over_estimate": Infinity,
+   "estimator": "snips"
+  },
+  {
+   "name": "n = 687",
+   "group": "sample_size",
+   "knob": 687,
+   "truth": 0.004953225649823585,
+   "value": 0.0002836436083523815,
+   "ci95": [
+    -0.000273966311678301,
+    0.000841253528383064
+   ],
+   "rel_error": -0.9427355770956076,
+   "n_rows": 687,
+   "ess": 195.53469205632402,
+   "ess_frac": 0.2846210946962504,
+   "effective_clicks": 0.2846210946962504,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.588137358000408,
+   "unlogged_target_mass": 0.045778249264064506,
+   "ci_width_over_estimate": 3.931764394549247,
+   "estimator": "snips"
+  },
+  {
+   "name": "n = 6,872",
+   "group": "sample_size",
+   "knob": 6872,
+   "truth": 0.004953225649823585,
+   "value": 0.007075336193734995,
+   "ci95": [
+    0.002508119199169806,
+    0.011642553188300184
+   ],
+   "rel_error": 0.428430015900243,
+   "n_rows": 6872,
+   "ess": 1889.845815687289,
+   "ess_frac": 0.27500666700920967,
+   "effective_clicks": 7.150173342239452,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 1.2910247285801988,
+   "estimator": "snips"
+  },
+  {
+   "name": "n = 68,716",
+   "group": "sample_size",
+   "knob": 68716,
+   "truth": 0.004953225649823585,
+   "value": 0.005401172842040337,
+   "ci95": [
+    0.004257883982777677,
+    0.006544461701302997
+   ],
+   "rel_error": 0.09043545032774869,
+   "n_rows": 68716,
+   "ess": 18450.27485726853,
+   "ess_frac": 0.268500419949772,
+   "effective_clicks": 62.560597848296865,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 0.42334836995543124,
+   "estimator": "snips"
+  },
+  {
+   "name": "n = 687,164",
+   "group": "sample_size",
+   "knob": 687164,
+   "truth": 0.004953225649823585,
+   "value": 0.0049996383455107015,
+   "ci95": [
+    0.004664562744545873,
+    0.00533471394647553
+   ],
+   "rel_error": 0.009370196104182993,
+   "n_rows": 687164,
+   "ess": 184031.00695251062,
+   "ess_frac": 0.26781235185852376,
+   "effective_clicks": 629.8946515712479,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 0.13403993561482364,
+   "estimator": "snips"
+  },
+  {
+   "name": "n = 1,374,327",
+   "group": "sample_size",
+   "knob": 1374327,
+   "truth": 0.004953225649823585,
+   "value": 0.005030268465837179,
+   "ci95": [
+    0.004793764513446144,
+    0.005266772418228214
+   ],
+   "rel_error": 0.01555406950142424,
+   "n_rows": 1374327,
+   "ess": 367932.95878946874,
+   "ess_frac": 0.2677186424988149,
+   "effective_clicks": 1276.4824874343494,
+   "max_weight": 9.641884128118862,
+   "p99_weight": 7.642390369406915,
+   "unlogged_target_mass": 0.0,
+   "ci_width_over_estimate": 0.09403233803413866,
+   "estimator": "snips"
+  }
+ ]
+}

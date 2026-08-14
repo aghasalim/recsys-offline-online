@@ -23,6 +23,7 @@ jobs:
           uv run python src/roo/baseline.py --self-check
           uv run python src/roo/ope.py --self-check
           uv run python src/roo/stress.py --self-check
+          uv run python src/roo/harness.py --self-check
 
       - name: lint
         run: uv run ruff check src

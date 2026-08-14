@@ -1,0 +1,6 @@
+data/
+reports/
+src/
+.venv/
+.git/
+__pycache__/

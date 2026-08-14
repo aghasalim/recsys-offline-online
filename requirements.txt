@@ -1,0 +1,4 @@
+# Runtime deps for the hosted demo. The app reads precomputed diagnostics from
+# app_data/, so it needs no dataset and no heavy numerical stack.
+streamlit>=1.40
+pandas>=2.2

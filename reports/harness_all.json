@@ -1,0 +1,160 @@
+{
+ "campaign": "all",
+ "tolerance": 0.1,
+ "decisions_correct": 6,
+ "n_scenarios": 7,
+ "rows": [
+  {
+   "scenario": "forward (random logs -> bts)",
+   "status": "ok",
+   "reported_value": 0.005030268465837179,
+   "would_be_value": 0.005030268465837179,
+   "truth": 0.004953225649823585,
+   "actual_rel_error": 0.01555406950142424,
+   "acceptable": true,
+   "reported": true,
+   "would_be_ci": [
+    0.004793764513446144,
+    0.005266772418228214
+   ],
+   "would_cover_truth": true,
+   "point_within_tolerance": true,
+   "decision_correct": true,
+   "unlogged_target_mass": 0.0,
+   "ess": 367932.95878946874,
+   "reasons": []
+  },
+  {
+   "scenario": "reverse (bts logs -> random)",
+   "status": "ok",
+   "reported_value": 0.0032973718032769,
+   "would_be_value": 0.0032973718032769,
+   "truth": 0.0034693344451502445,
+   "actual_rel_error": -0.049566464286465495,
+   "acceptable": false,
+   "reported": true,
+   "would_be_ci": [
+    0.0031310400903988398,
+    0.0034637035161549606
+   ],
+   "would_cover_truth": false,
+   "point_within_tolerance": true,
+   "decision_correct": false,
+   "unlogged_target_mass": 0.0,
+   "ess": 19909.595440436362,
+   "reasons": []
+  },
+  {
+   "scenario": "broken support (top 5 items unlogged)",
+   "status": "refuse",
+   "reported_value": null,
+   "would_be_value": 0.004563356805641704,
+   "truth": 0.004953225649823585,
+   "actual_rel_error": -0.07871009151294506,
+   "acceptable": false,
+   "reported": false,
+   "would_be_ci": [
+    0.004317699440970657,
+    0.00480901417031275
+   ],
+   "would_cover_truth": false,
+   "point_within_tolerance": true,
+   "decision_correct": true,
+   "unlogged_target_mass": 0.177425618563024,
+   "ess": 310816.55825030344,
+   "reasons": [
+    "17.7% of the target policy's probability mass is on actions that never appear in these logs (limit 1.0%). Expect a bias of roughly that size, and note the confidence interval will NOT reflect it."
+   ]
+  },
+  {
+   "scenario": "broken support (top 20 items unlogged)",
+   "status": "refuse",
+   "reported_value": null,
+   "would_be_value": 0.0035490327273473192,
+   "truth": 0.004953225649823585,
+   "actual_rel_error": -0.28349060223538936,
+   "acceptable": false,
+   "reported": false,
+   "would_be_ci": [
+    0.00329793806045539,
+    0.0038001273942392484
+   ],
+   "would_cover_truth": false,
+   "point_within_tolerance": false,
+   "decision_correct": true,
+   "unlogged_target_mass": 0.6678248220647002,
+   "ess": 259170.3904827432,
+   "reasons": [
+    "66.8% of the target policy's probability mass is on actions that never appear in these logs (limit 1.0%). Expect a bias of roughly that size, and note the confidence interval will NOT reflect it."
+   ]
+  },
+  {
+   "scenario": "broken support (top 60 items unlogged)",
+   "status": "refuse",
+   "reported_value": null,
+   "would_be_value": 0.0017883227448740062,
+   "truth": 0.004953225649823585,
+   "actual_rel_error": -0.6389579495661177,
+   "acceptable": false,
+   "reported": false,
+   "would_be_ci": [
+    0.0015560654335065225,
+    0.00202058005624149
+   ],
+   "would_cover_truth": false,
+   "point_within_tolerance": false,
+   "decision_correct": true,
+   "unlogged_target_mass": 0.9518249152015891,
+   "ess": 135417.59235893207,
+   "reasons": [
+    "95.2% of the target policy's probability mass is on actions that never appear in these logs (limit 1.0%). Expect a bias of roughly that size, and note the confidence interval will NOT reflect it."
+   ]
+  },
+  {
+   "scenario": "tiny sample (n=687)",
+   "status": "refuse",
+   "reported_value": null,
+   "would_be_value": 0.0002836436083523815,
+   "truth": 0.004953225649823585,
+   "actual_rel_error": -0.9427355770956076,
+   "acceptable": false,
+   "reported": false,
+   "would_be_ci": [
+    -0.000273966311678301,
+    0.000841253528383064
+   ],
+   "would_cover_truth": false,
+   "point_within_tolerance": false,
+   "decision_correct": true,
+   "unlogged_target_mass": 0.045778249264064506,
+   "ess": 195.53469205632402,
+   "reasons": [
+    "4.6% of the target policy's probability mass is on actions that never appear in these logs (limit 1.0%). Expect a bias of roughly that size, and note the confidence interval will NOT reflect it.",
+    "effective sample size is 196 (limit 1,000). 687 logged rows carry the weight of 196."
+   ]
+  },
+  {
+   "scenario": "tiny sample (n=69)",
+   "status": "refuse",
+   "reported_value": null,
+   "would_be_value": 0.0,
+   "truth": 0.004953225649823585,
+   "actual_rel_error": -1.0,
+   "acceptable": false,
+   "reported": false,
+   "would_be_ci": [
+    0.0,
+    0.0
+   ],
+   "would_cover_truth": false,
+   "point_within_tolerance": false,
+   "decision_correct": true,
+   "unlogged_target_mass": 0.7410287134379749,
+   "ess": 23.580475075870105,
+   "reasons": [
+    "74.1% of the target policy's probability mass is on actions that never appear in these logs (limit 1.0%). Expect a bias of roughly that size, and note the confidence interval will NOT reflect it.",
+    "effective sample size is 24 (limit 1,000). 69 logged rows carry the weight of 24."
+   ]
+  }
+ ]
+}

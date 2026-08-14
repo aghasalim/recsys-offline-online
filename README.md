@@ -2,10 +2,10 @@
 
 Built by a third-year Applied Computer Science (AI) student.
 
-> **Status: in progress.** Milestones 1–4 are done — ground truth, naive
-> evaluation, corrected estimators, and the stress tests that find where the
-> correction fails. Deployment and the final write-up remain. Numbers below are
-> real and reproducible.
+> **Status: in progress.** Milestones 1–5 are done — ground truth, naive
+> evaluation, corrected estimators, stress tests, and an evaluation gate that
+> refuses to report a number when the diagnostics say it would be meaningless.
+> The final write-up remains. Numbers below are real and reproducible.
 
 The problem with a recommender portfolio project is that the metric you report
 is not the thing anyone cares about. You train a ranker, you report NDCG@10 or
@@ -226,6 +226,95 @@ off-policy estimate, check what fraction of your target policy's probability
 mass sits on actions your logs have never seen. ESS will not tell you, and the
 confidence interval will not tell you.
 
+## The deliverable is a gate, not a model
+
+Milestone 4's failure mode is nasty because the output looks healthy: precise
+estimate, narrow interval, both wrong by 90%. So `harness.audit()` returns a
+value **only** when the checks pass. Otherwise it returns `value=None` and the
+reasons — a withheld number cannot be pasted into a slide, a wrong one can.
+
+```python
+a = audit(logs, target_policy)
+if a.status == "refuse":
+    print(a.reasons)
+    # ['17.7% of the target policy's probability mass is on actions that never
+    #   appear in these logs (limit 1.0%). Expect a bias of roughly that size,
+    #   and note the confidence interval will NOT reflect it.']
+else:
+    print(a.value, a.ci95)
+```
+
+**The thresholds are not fitted.** Milestone 4 measured that relative error
+tracks unlogged mass almost 1:1, so the limit is simply the bias you are willing
+to accept (default 1%). The ESS floor is an absolute count, not a fraction —
+0.16% ESS is fine on 12M rows and fatal on 100k — set to the usual ~1,000 rule
+of thumb. Neither was chosen by checking which value made the answers come out
+right.
+
+### Does the gate work? Scored against the known answers
+
+Graded on **interval coverage**, not point-estimate error — the gate reports an
+interval, so that is what has to be right:
+
+| scenario | gate | true error | unlogged mass | ESS | correct |
+|---|---|---|---|---|---|
+| forward (random → BTS) | ok | +1.6% | 0.0% | 367,933 | yes |
+| reverse (BTS → random) | ok | −5.0% | 0.0% | 19,910 | **no** |
+| top 5 items unlogged | refuse | −7.9% | 17.7% | 310,817 | yes |
+| top 20 items unlogged | refuse | −28.3% | 66.8% | 259,170 | yes |
+| top 60 items unlogged | refuse | −63.9% | 95.2% | 135,418 | yes |
+| n = 687 | refuse | −94.3% | 4.6% | 196 | yes |
+| n = 69 | refuse | −100.0% | 74.1% | 24 | yes |
+
+**6 / 7 correct, and the one failure is worth more than the six successes.**
+
+### The gate's known failure mode
+
+The reverse direction slips through. Truth 0.003469, estimate 0.003297 (−5.0%),
+interval **[0.003131, 0.003464]** — which misses the truth by 1.0 half-widths,
+just barely. Support is perfect and ESS is 19,910, so every check passes.
+
+The cause is that the interval itself is unreliable here. With a maximum
+importance weight of **12,500** and ESS at **0.16%**, the normal approximation
+behind the standard error is marginally anti-conservative — the sum is dominated
+by a thin tail, and `std/sqrt(n)` understates its spread. The point estimate is
+fine; the *uncertainty* around it is understated.
+
+I am leaving this documented rather than fixing it by tightening a threshold,
+because any threshold that catches this case would have been chosen by looking
+at the answer, which is the exact sin this project is about. The honest fix is a
+bootstrap or empirical-Bernstein interval that does not assume a light tail, and
+that is future work.
+
+### Two things I got wrong while building this, both caught by measurement
+
+1. **I scored the gate on the wrong thing first.** The original criterion was
+   |point estimate − truth| ≤ 10%, which flagged the `n = 6,872` case as a
+   failure. It is not: the estimate was 43% high but its interval was
+   [0.00251, 0.01164], which *contains* the truth, and the gate had already
+   warned that the interval was 129% as wide as the estimate. Grading a point
+   estimate when the tool reports an interval is the wrong test.
+
+2. **ESS is the wrong sufficiency check for rare events.** At n = 6,872 the ESS
+   of 1,890 looks comfortable and amounts to **9 expected clicks**. Effective
+   *clicks*, now reported in the diagnostics, is the quantity that actually
+   binds when the outcome rate is 0.5%.
+
+### Demo
+
+```bash
+uv run streamlit run app.py
+# or
+docker build -t roo . && docker run -p 7860:7860 roo
+```
+
+The app ships precomputed full-dataset diagnostics (`app_data/grid_all.json`,
+8.6 KB), and the gate's decision depends only on three scalars — so the
+thresholds are live. Move them and the real gate logic re-runs; the numbers are
+the full-data ones from this README, not a subsample. True values are shown on
+purpose, so you can watch the estimator be confidently wrong while the gate
+withholds it.
+
 ## Reproduce
 
 ```bash
@@ -239,6 +328,8 @@ uv run python src/roo/eda.py all                   # the known answer + assumpti
 uv run python src/roo/baseline.py all              # the naive estimators
 uv run python src/roo/ope.py all                   # IPS / SNIPS / DR + diagnostics
 uv run python src/roo/stress.py all                # where the correction fails
+uv run python src/roo/harness.py all               # the gate, scored against truth
+uv run python src/roo/harness.py all --export-grid # data for the demo app
 ```
 
 Self-checks, which assert each estimator returns the arithmetically correct
@@ -248,6 +339,7 @@ answer on hand-built data:
 uv run python src/roo/baseline.py --self-check
 uv run python src/roo/ope.py --self-check
 uv run python src/roo/stress.py --self-check
+uv run python src/roo/harness.py --self-check
 ```
 
 The raw logs and the derived Parquet are gitignored. 80 of the 89 raw columns
@@ -264,14 +356,13 @@ dropping it, which is most of why 7 GB compresses to 78 MB.
       with cross-fitting, plus ESS, weight tails and a clipping sweep.
 - [x] **4 — When the correction fails.** Reverse-direction weights, sample-size
       curves, and broken support — plus which diagnostics actually detect it.
-- [ ] **5 — Deployment.** An evaluation harness plus a demo that shows the
-      offline/online gap interactively.
+- [x] **5 — Deployment.** An evaluation gate that refuses on bad diagnostics,
+      validated against known answers, plus an interactive demo and Docker.
 - [ ] **6 — Docs.** Full write-up with the failures kept in.
 
-Milestone 5 turns the support diagnostic into something usable: an evaluation
-harness that refuses to report a number when the target policy puts meaningful
-mass on unlogged actions, rather than returning a confident estimate that is
-93% wrong.
+Milestone 6 is the write-up, plus the one open problem this left behind: a
+confidence interval that survives heavy-tailed importance weights, since the
+gate's single false accept is a coverage miss and not a support failure.
 
 ## Stack
 
