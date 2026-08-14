@@ -1,0 +1,24 @@
+{
+ "tables": [
+  {
+   "policy": "random",
+   "campaign": "all",
+   "rows": 1374327,
+   "n_items": 80,
+   "csv_mb": 695.5,
+   "parquet_mb": 6.6,
+   "seconds": 2.7
+  },
+  {
+   "policy": "bts",
+   "campaign": "all",
+   "rows": 12357200,
+   "n_items": 80,
+   "csv_mb": 6321.0,
+   "parquet_mb": 71.5,
+   "seconds": 25.2
+  }
+ ],
+ "affinity_nonzero_fraction": 0.000636625,
+ "total_parquet_mb": 78.1
+}
