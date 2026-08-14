@@ -19,7 +19,9 @@ jobs:
       # correct answer on hand-built data, so they need no dataset and CI
       # does not depend on an 11 GB download.
       - name: estimator self-checks
-        run: uv run python src/roo/baseline.py --self-check
+        run: |
+          uv run python src/roo/baseline.py --self-check
+          uv run python src/roo/ope.py --self-check
 
       - name: lint
         run: uv run ruff check src
