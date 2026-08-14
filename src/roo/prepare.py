@@ -67,7 +67,7 @@ def convert(policy: str, campaign: str) -> dict:
 
     return {
         "policy": policy, "campaign": campaign,
-        "rows": int(len(df)), "n_items": int(df.item_id.nunique()),
+        "rows": len(df), "n_items": int(df.item_id.nunique()),
         "csv_mb": round(csv.stat().st_size / 1e6, 1),
         "parquet_mb": round(dest.stat().st_size / 1e6, 1),
         "seconds": round(time.time() - t0, 1),

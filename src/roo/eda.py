@@ -68,7 +68,7 @@ def describe(policy: str, campaign: str, df: pd.DataFrame) -> dict:
     p, lo, hi = ci(int(df.click.sum()), len(df))
     return {
         "policy": policy, "campaign": campaign,
-        "rows": int(len(df)), "clicks": int(df.click.sum()),
+        "rows": len(df), "clicks": int(df.click.sum()),
         "ctr": p, "ctr_lo": lo, "ctr_hi": hi,
         "n_items": int(df.item_id.nunique()),
         "positions": sorted(int(x) for x in df.position.unique()),
