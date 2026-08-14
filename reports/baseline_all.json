@@ -1,0 +1,39 @@
+{
+ "campaign": "all",
+ "truth_bts_ctr": 0.004953225649823585,
+ "truth_random_ctr": 0.0034693344451502445,
+ "train_rows": 990811,
+ "test_rows": 383516,
+ "train_days": 5,
+ "estimators": {
+  "naive_mean": {
+   "value": 0.0034693344451502445,
+   "abs_error": -0.0014838912046733405,
+   "rel_error": -0.29958078019849366
+  },
+  "replay": {
+   "value": 0.007627118644067797,
+   "abs_error": 0.002673892994244212,
+   "rel_error": 0.5398286254815476,
+   "n_matched": 4720,
+   "pct_of_test_kept": 0.012307178839996245,
+   "ci95": [
+    0.005514466159631035,
+    0.01054057283391468
+   ],
+   "truth_inside_ci": false
+  },
+  "direct_method_empirical": {
+   "value": 0.004750129658271529,
+   "abs_error": -0.0002030959915520561,
+   "rel_error": -0.041002773931627656
+  },
+  "direct_method_logistic": {
+   "value": 0.003546667634014225,
+   "abs_error": -0.00140655801580936,
+   "rel_error": -0.28396808771662885,
+   "auc": 0.5386401389813122,
+   "log_loss": 0.023729068088279126
+  }
+ }
+}
