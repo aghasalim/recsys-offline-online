@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --frozen
+
+      # The self-checks assert each estimator returns the arithmetically
+      # correct answer on hand-built data, so they need no dataset and CI
+      # does not depend on an 11 GB download.
+      - name: estimator self-checks
+        run: uv run python src/roo/baseline.py --self-check
+
+      - name: lint
+        run: uv run ruff check src
