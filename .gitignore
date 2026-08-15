@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 data/open_bandit_dataset/
 data/parquet/
+.env
+.env.local
