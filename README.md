@@ -51,7 +51,43 @@ flowchart TB
 
 ---
 
-## The known answer
+
+---
+
+## Abstract
+
+Offline recommender metrics are used to decide whether a policy is worth shipping,
+and they are usually validated against nothing. This work uses a dataset where the
+online answer is known — logged under a uniformly random policy, with the target
+policy's true click-through rate measurable directly — and asks which offline
+estimators recover it.
+
+The two things practitioners actually do both fail, in opposite directions. A
+naive mean over the logs is 30% low, because it averages the behaviour of a policy
+that is not the one being evaluated. Replay is 54% high, and gets there by
+discarding 98.8% of the test rows to find action matches. One kills a good policy;
+the other ships a bad one.
+
+The propensity-corrected estimators recover the truth. IPS, SNIPS and cross-fit
+doubly-robust all land within 1.7% of the true CTR with 95% intervals that cover
+it, on 1.37M logged rows. The estimators also degrade predictably: eroding support
+by dropping logged items moves probability mass onto never-logged actions, the
+error grows, and the interval stops covering — with effective sample size
+available as an advance warning.
+
+The deliverable is framed as a gate rather than a number. Given a tolerance, the
+harness makes a ship / do-not-ship call on each scenario, and it got 6 of 7 right
+at a 10% tolerance.
+
+**Contributions.** (i) A known-answer validation of offline estimators against
+measured online lift. (ii) A quantification of how the two common shortcuts fail
+and in which direction. (iii) A support-erosion stress test with a diagnostic that
+anticipates the failure. (iv) A decision harness scored on decisions, not on
+estimate error.
+
+---
+
+## 1. The known answer
 
 7 days of live traffic, both policies running concurrently over 80 items.
 
@@ -79,7 +115,7 @@ would be no true answer to grade against.
 
 ![ground truth](reports/eda_all.png)
 
-## What the naive offline evaluation says
+## 2. What the naive offline evaluation says
 
 Estimating BTS's CTR from the random logs, the way it usually gets done:
 
@@ -111,7 +147,9 @@ the thing being decided. That is the whole argument for this project: an offline
 ranking metric is a statement about a click model, and the decision you are
 making is about a policy.
 
-## What the propensity correction fixes
+![the two shortcuts against the corrected estimators](reports/baselines.png)
+
+## 3. What the propensity correction fixes
 
 The logs record the probability of every action taken. Reweighting each logged
 reward by `pi_target(a|x) / pi_logging(a|x)` converts "what happened under
@@ -174,7 +212,7 @@ That is not a method difference: milestone 2 fit it on 5 days and this fits it
 on all 7. Comparing those two numbers directly would be comparing training set
 sizes and calling it an estimator comparison.
 
-## Where it breaks
+## 4. Where it breaks
 
 Milestone 3 was clean because evaluating **from** uniform-random logs is the
 easy direction. Nobody has those logs in production — you have logs from the
@@ -250,7 +288,11 @@ off-policy estimate, check what fraction of your target policy's probability
 mass sits on actions your logs have never seen. ESS will not tell you, and the
 confidence interval will not tell you.
 
-## The deliverable is a gate, not a model
+![support erosion and the diagnostic that anticipates it](reports/support.png)
+
+## 5. The deliverable is a gate, not a model
+
+![what the gate decided on each scenario](reports/gate.png)
 
 Milestone 4's failure mode is nasty because the output looks healthy: precise
 estimate, narrow interval, both wrong by 90%. So `harness.audit()` returns a
@@ -339,7 +381,7 @@ the full-data ones from this README, not a subsample. True values are shown on
 purpose, so you can watch the estimator be confidently wrong while the gate
 withholds it.
 
-## Reproduce
+## 6. Reproducibility
 
 ```bash
 uv sync
@@ -370,7 +412,7 @@ The raw logs and the derived Parquet are gitignored. 80 of the 89 raw columns
 are a user-item affinity vector that is **0.0637% non-zero**, measured before
 dropping it, which is most of why 7 GB compresses to 78 MB.
 
-## Roadmap
+## 7. Roadmap
 
 - [x] **1 — Ground truth.** Prepare the logs, measure both policies' true online
       CTR, verify the four assumptions that make the comparison fair.
@@ -385,7 +427,7 @@ dropping it, which is most of why 7 GB compresses to 78 MB.
 - [x] **6 — Docs.** Architecture, full write-up, and the decision trail in
       [NOTES.md](NOTES.md) with every wrong turn kept in.
 
-## What I would do next
+## 8. What I would do next
 
 1. **A confidence interval that survives heavy tails.** This is the one open
    problem and the gate's only false accept: at ESS 0.16% and max weight 12,500
@@ -404,7 +446,7 @@ dropping it, which is most of why 7 GB compresses to 78 MB.
    one retailer. The support finding should replicate; the specific numbers
    should not be assumed to.
 
-## Stack
+## 9. Stack
 
 Python 3.12, pandas, scikit-learn, SciPy, NumPy, matplotlib, PyArrow, Streamlit,
 Docker. Managed with `uv`, linted with `ruff`, four self-check suites in CI.
@@ -413,7 +455,7 @@ Every self-check asserts a metric **fails** on a deliberately wrong input rather
 than merely returning a number — they need no dataset, so CI does not depend on
 an 11 GB download, and they caught two real bugs during development.
 
-## Data
+## 10. Data
 
 [Open Bandit Dataset](https://research.zozo.com/data.html) (ZOZO Research),
 released for research use. My code is MIT.
