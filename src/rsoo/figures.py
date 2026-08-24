@@ -52,7 +52,7 @@ def baselines(out: Path) -> Path:
 
     figure, ax = plt.subplots(figsize=(10, 4.8))
     positions = np.arange(len(entries))
-    for index, (label, value, colour, ci) in enumerate(entries):
+    for index, (_label, value, colour, ci) in enumerate(entries):
         ax.barh(index, value * 100, 0.55, color=colour, edgecolor="0.3", lw=0.5)
         if ci:
             ax.plot([ci[0] * 100, ci[1] * 100], [index, index], color="0.2", lw=2)
