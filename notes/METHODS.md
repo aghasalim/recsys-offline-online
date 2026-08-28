@@ -363,7 +363,7 @@ that is future work.
 - [x] **5, Deployment.** An evaluation gate that refuses on bad diagnostics,
       validated against known answers, plus an interactive demo and Docker.
 - [x] **6, Docs.** Architecture, full write-up, and the decision trail in
-      [NOTES.md](NOTES.md) with every wrong turn kept in.
+      [NOTES.md](../NOTES.md) with every wrong turn kept in.
 ## 8. What I would do next
 
 1. **A confidence interval that survives heavy tails.** This is the one open
@@ -399,7 +399,7 @@ Built by a third-year Applied Computer Science (AI) student.
 
 > **Status: complete.** All six milestones done. Every number here was produced
 > by the code in this repo; the decision trail, including the things I got
-> wrong, is in [NOTES.md](NOTES.md). The project ends on one open problem, stated
+> wrong, is in [NOTES.md](../NOTES.md). The project ends on one open problem, stated
 > rather than hidden: a confidence interval that survives heavy-tailed weights.
 
 The app ships precomputed full-dataset diagnostics (`app_data/grid_all.json`,
