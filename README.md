@@ -80,9 +80,9 @@ the logs never saw. [Full stress tests](notes/METHODS.md#4-where-it-breaks).
 
 ![the support sweep, step by step](reports/support-erosion.gif)
 
-*The same sweep played one step at a time: only the number of highest-CTR items
-deleted from the logs changes, while the estimator, the target policy and the
-measured true CTR line stay fixed.*
+*One step per frame, deleting the highest-CTR items from the logs. The
+estimator and the target policy never change, so the drift away from the
+measured true CTR line is support erosion alone.*
 
 ## The deliverable is a gate, not a model
 
