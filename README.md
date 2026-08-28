@@ -146,7 +146,7 @@ uv run python src/roo/harness.py all              # the gate, scored against tru
 uv run python src/roo/harness.py all --export-grid # data for the demo app
 
 # self-checks: no dataset needed, so CI does not need the 11 GB download
-uv run python src/roo/{baseline,ope,stress,harness}.py --self-check
+for m in baseline ope stress harness; do uv run python src/roo/$m.py --self-check; done
 ```
 
 Raw logs and the derived Parquet are gitignored. Stack and roadmap in
