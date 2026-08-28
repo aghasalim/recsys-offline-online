@@ -142,7 +142,7 @@ making is about a policy.
 ## 3. What the propensity correction fixes
 
 The logs record the probability of every action taken. Reweighting each logged
-reward by`pi_target(a|x) / pi_logging(a|x)` converts "what happened under
+reward by `pi_target(a|x) / pi_logging(a|x)` converts "what happened under
 random" into "what would happen under BTS":
 
 | estimator | estimate | error vs truth | 95% CI | covers truth |
@@ -164,7 +164,7 @@ would be heavy-tailed and wreck IPS. Measured, the largest weight in 1.37
 million rows is **9.64**.
 
 The reason is arithmetic I should have done first. Uniform logging gives every
-action probability 1/80, so no weight can exceed`80 × max pi_target`, and BTS's
+action probability 1/80, so no weight can exceed `80 × max pi_target`, and BTS's
 most concentrated action is 0.1205 → 9.64. Heavy tails need a *logging* policy
 that is concentrated, not a target policy. Evaluating from uniform-random logs
 is the easy direction, and this dataset only supports the easy direction from
@@ -279,8 +279,8 @@ confidence interval will not tell you.
 ## 5. The deliverable is a gate, not a model
 
 Milestone 4's failure mode is nasty because the output looks healthy: precise
-estimate, narrow interval, both wrong by 90%. So`harness.audit()` returns a
-value **only** when the checks pass. Otherwise it returns`value=None` and the
+estimate, narrow interval, both wrong by 90%. So `harness.audit()` returns a
+value **only** when the checks pass. Otherwise it returns `value=None` and the
 reasons, a withheld number cannot be pasted into a slide, a wrong one can.
 
 ```python
@@ -327,7 +327,7 @@ just barely. Support is perfect and ESS is 19,910, so every check passes.
 The cause is that the interval itself is unreliable here. With a maximum
 importance weight of **12,500** and ESS at **0.16%**, the normal approximation
 behind the standard error is marginally anti-conservative, the sum is dominated
-by a thin tail, and`std/sqrt(n)` understates its spread. The point estimate is
+by a thin tail, and `std/sqrt(n)` understates its spread. The point estimate is
 fine; the *uncertainty* around it is understated.
 
 I am leaving this documented rather than fixing it by tightening a threshold,
@@ -339,7 +339,7 @@ that is future work.
 ### Two things I got wrong while building this, both caught by measurement
 
 1. **I scored the gate on the wrong thing first.** The original criterion was
-   |point estimate − truth| ≤ 10%, which flagged the`n = 6,872` case as a
+   |point estimate − truth| ≤ 10%, which flagged the `n = 6,872` case as a
    failure. It is not: the estimate was 43% high but its interval was
    [0.00251, 0.01164], which *contains* the truth, and the gate had already
    warned that the interval was 129% as wide as the estimate. Grading a point
@@ -385,7 +385,7 @@ that is future work.
 ## 9. Stack
 
 Python 3.12, pandas, scikit-learn, SciPy, NumPy, matplotlib, PyArrow, Streamlit,
-Docker. Managed with`uv`, linted with`ruff`, four self-check suites in CI.
+Docker. Managed with `uv`, linted with `ruff`, four self-check suites in CI.
 
 Every self-check asserts a metric **fails** on a deliberately wrong input rather
 than merely returning a number, they need no dataset, so CI does not depend on
