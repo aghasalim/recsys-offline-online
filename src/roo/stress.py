@@ -189,7 +189,6 @@ def main() -> None:
         return
 
     o = run(a.campaign)
-    figure(a.campaign)
     print("=== direction matters ===")
     print(f"{'setting':32} {'truth':>8} {'IPS':>9} {'rel err':>9} {'max w':>9} {'ESS':>8}")
     for k in ("forward", "reverse"):
@@ -210,66 +209,6 @@ def main() -> None:
         print(f"{c['items_dropped']:8} {c['rel_error']:+8.1%} {c['ess_frac']:7.2%} "
               f"{c['target_mass_on_unlogged_actions']:13.1%}  "
               f"{'yes' if c['covers_truth'] else 'NO'}")
-
-
-def figure(campaign: str = "all") -> Path:
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    o = json.loads((REPORTS / f"stress_{campaign}.json").read_text())
-    fig, ax = plt.subplots(1, 3, figsize=(16, 4.4))
-
-    # 1. weight tails, forward vs reverse
-    rnd = pd.read_parquet(PARQUET / f"random_{campaign}.parquet")
-    bts = pd.read_parquet(PARQUET / f"bts_{campaign}.parquet")
-    pi_bts = target_policy(bts)
-    n_items = int(max(rnd.item_id.nunique(), bts.item_id.nunique()))
-    key = pi_bts.set_index(["position", "item_id"]).prob
-    w_fwd = np.nan_to_num(key.reindex(
-        pd.MultiIndex.from_arrays([rnd.position, rnd.item_id])).to_numpy(), nan=0.0
-    ) / rnd.propensity_score.to_numpy()
-    w_rev = (1.0 / n_items) / bts.propensity_score.to_numpy()
-    bins = np.logspace(-3, 4.5, 70)
-    ax[0].hist(np.clip(w_fwd, 1e-3, None), bins=bins, alpha=0.65,
-               label=f"forward (max {w_fwd.max():.0f})")
-    ax[0].hist(np.clip(w_rev, 1e-3, None), bins=bins, alpha=0.65,
-               label=f"reverse (max {w_rev.max():,.0f})")
-    ax[0].set_xscale("log")
-    ax[0].set_yscale("log")
-    ax[0].set_xlabel("importance weight")
-    ax[0].set_title("which policy you logged with decides everything")
-    ax[0].legend()
-
-    # 2. sample curve
-    c = o["sample_curve_reverse"]
-    ax[1].errorbar([x["n"] for x in c], [x["value"] for x in c],
-                   yerr=[x["ci_width"] / 2 for x in c], fmt="o-", capsize=4)
-    ax[1].axhline(o["reverse"]["truth"], color="k", ls="--", label="truth")
-    ax[1].set_xscale("log")
-    ax[1].set_xlabel("rows used")
-    ax[1].set_title("intervals widen honestly as data shrinks")
-    ax[1].legend()
-
-    # 3. the diagnostic that works vs the one that does not
-    b = o["broken_support"]
-    x = [d["items_dropped"] for d in b]
-    ax[2].plot(x, [abs(d["rel_error"]) * 100 for d in b], "o-", color="#c0392b",
-               label="|error| %")
-    ax[2].plot(x, [d["target_mass_on_unlogged_actions"] * 100 for d in b], "s-",
-               color="#27ae60", label="unlogged target mass %")
-    ax[2].plot(x, [d["ess_frac"] * 100 for d in b], "^-", color="#7f8c8d",
-               label="ESS % (blind to this)")
-    ax[2].set_xlabel("items removed from the logs")
-    ax[2].set_title("ESS misses support failure; unlogged mass predicts it")
-    ax[2].legend()
-
-    fig.suptitle(f"Where off-policy evaluation breaks - campaign '{campaign}'")
-    fig.tight_layout()
-    out = REPORTS / f"stress_{campaign}.png"
-    fig.savefig(out, dpi=110)
-    plt.close(fig)
-    return out
 
 
 if __name__ == "__main__":

@@ -1,13 +1,13 @@
 """Demo for the off-policy evaluation gate.
 
 The point of this app is not to show a number. It is to let you break the
-estimate and watch the gate catch it — drag the sliders until the diagnostics
+estimate and watch the gate catch it, drag the sliders until the diagnostics
 go red, and see the estimator return a confident, precise, wrong answer while
 the gate refuses to report it.
 
 Everything shown is precomputed on the full dataset (app_data/grid_all.json).
-The gate's decision depends only on three scalars — unlogged target mass,
-effective sample size, and interval width — so the thresholds are live: moving
+The gate's decision depends only on three scalars, unlogged target mass,
+effective sample size, and interval width, so the thresholds are live: moving
 them re-runs the real gate logic, not a cached answer. The true values are
 revealed on purpose, because the whole project is about the offline estimate
 being checkable against them.
@@ -40,7 +40,7 @@ def gate(s: dict, max_mass: float, min_ess: float, warn_ratio: float) -> tuple[s
         reasons.append(
             f"**{s['unlogged_target_mass']:.1%}** of the target policy's probability "
             f"mass is on actions that never appear in these logs (limit "
-            f"{max_mass:.1%}). Expect a bias of roughly that size — and the "
+            f"{max_mass:.1%}). Expect a bias of roughly that size, and the "
             f"confidence interval will *not* reflect it.")
     if s["ess"] < min_ess:
         reasons.append(
@@ -55,7 +55,7 @@ def gate(s: dict, max_mass: float, min_ess: float, warn_ratio: float) -> tuple[s
 
 
 scen = load()
-st.title("🚦 Off-policy evaluation, with a gate")
+st.title("Off-policy evaluation, with a gate")
 st.caption(
     "Estimating a recommender policy's online CTR from logged data. Every "
     "scenario below has a **known** true value, measured from a real A/B test, "
@@ -118,7 +118,7 @@ for tab, key in zip(tabs, groups, strict=True):
                       f"{s['rel_error']:+.1%} error", delta_color="inverse")
             if status == "refuse" and abs(s["rel_error"]) > 0.1:
                 st.error(f"Had the gate not fired, this run would have reported a "
-                         f"number that is **{s['rel_error']:+.1%}** wrong — with a "
+                         f"number that is **{s['rel_error']:+.1%}** wrong, with a "
                          f"narrow confidence interval and nothing else to warn you.")
 
         st.markdown("**Diagnostics**")
@@ -137,22 +137,22 @@ with st.expander("Why a gate, and what it does not do"):
 **The failure this is built for.** Off-policy evaluation breaks in a way that
 looks fine from the outside: the estimate is precise, the confidence interval is
 narrow, and both are wrong by up to 93%. Removing the top-CTR items from the
-logs drives the error to −89.6% while *effective sample size rises* to 47.6% —
+logs drives the error to −89.6% while *effective sample size rises* to 47.6%
 the diagnostic everyone reaches for moves in the wrong direction, because the
 weights that survive are beautifully well conditioned.
 
 **What actually detects it** is free and needs no labels: the target policy's
 probability mass on actions that never appear in the logs. Measured on this
-dataset it tracks the error almost 1:1 — 17.7% mass → −19.0% error, 88.6% →
+dataset it tracks the error almost 1:1 to 17.7% mass → −19.0% error, 88.6% →
 −89.6%.
 
 **Limits, stated plainly.**
 - Validated on 7 scenarios from one dataset: 6/7 correct decisions, **0 false
   accepts**, 1 conservative refusal. It has never yet reported a wrong number,
-  which is the property that matters — but 7 scenarios is not a guarantee.
+  which is the property that matters, but 7 scenarios is not a guarantee.
 - The 1:1 mass→error relationship was measured with IPS. The gate defaults to
   SNIPS, whose self-normalisation damps the bias, so the gate is *conservative*
-  when using SNIPS — that is the single incorrect decision above.
+  when using SNIPS, that is the single incorrect decision above.
 - Everything here assumes the logged propensities are correct. If they are
   wrong, every number on this page is wrong and no diagnostic here would know.
 """)

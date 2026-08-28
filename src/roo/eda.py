@@ -31,10 +31,6 @@ import argparse
 import json
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -129,45 +125,7 @@ def run(campaign: str = "all") -> dict:
 
     REPORTS.mkdir(exist_ok=True)
     (REPORTS / f"eda_{campaign}.json").write_text(json.dumps(out, indent=1, default=str))
-    figure(campaign, rnd, bts, out)
     return out
-
-
-def figure(campaign: str, rnd: pd.DataFrame, bts: pd.DataFrame, out: dict) -> None:
-    fig, ax = plt.subplots(1, 3, figsize=(15, 4))
-
-    g = out["ground_truth"]
-    names = ["random", "bts"]
-    vals = [out["random"]["ctr"], out["bts"]["ctr"]]
-    err = [[out["random"]["ctr"] - out["random"]["ctr_lo"],
-            out["bts"]["ctr"] - out["bts"]["ctr_lo"]],
-           [out["random"]["ctr_hi"] - out["random"]["ctr"],
-            out["bts"]["ctr_hi"] - out["bts"]["ctr"]]]
-    ax[0].bar(names, vals, yerr=err, capsize=6, color=["#888", "#c0392b"])
-    ax[0].set_title(f"true online CTR (95% CI)\nlift {g['relative_lift']:+.1%}, "
-                    f"p={g['p_value']:.1e}")
-    ax[0].set_ylabel("CTR")
-
-    for name, d in out["by_position"].items():
-        ks = sorted(d)
-        ax[1].plot(ks, [d[k]["ctr"] for k in ks], "o-", label=name)
-    ax[1].set_title("CTR by slot")
-    ax[1].set_xlabel("position")
-    ax[1].legend()
-
-    share = rnd.item_id.value_counts(normalize=True).sort_values(ascending=False)
-    share_b = bts.item_id.value_counts(normalize=True).sort_values(ascending=False)
-    ax[2].plot(np.arange(len(share)), share.to_numpy(), label="random")
-    ax[2].plot(np.arange(len(share_b)), share_b.to_numpy(), label="bts")
-    ax[2].set_title("action distribution (sorted)")
-    ax[2].set_xlabel("item rank")
-    ax[2].set_ylabel("share of impressions")
-    ax[2].legend()
-
-    fig.suptitle(f"Open Bandit Dataset - campaign '{campaign}'")
-    fig.tight_layout()
-    fig.savefig(REPORTS / f"eda_{campaign}.png", dpi=110)
-    plt.close(fig)
 
 
 def main() -> None:

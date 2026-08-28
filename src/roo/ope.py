@@ -231,7 +231,6 @@ def main() -> None:
         return
 
     o = run(a.campaign)
-    figure(a.campaign)
     t, wt = o["truth_bts_ctr"], o["weights"]
     print(f"=== campaign '{o['campaign']}'   truth {t:.5f}   n={o['n_rows']:,} ===\n")
     print(f"{'estimator':16} {'estimate':>10} {'rel err':>9} {'95% CI':>22}  covers truth")
@@ -251,59 +250,6 @@ def main() -> None:
         print(f"{cap:>9} {c['value']:10.5f} {c['rel_error']:+8.1%} "
               f"{c['ess']:12,.0f} {c['clipped_frac']:9.2%}")
 
-
-
-
-def figure(campaign: str = "all") -> Path:
-    """Three panels: estimator agreement, weight distribution, clipping curve."""
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    o = json.loads((REPORTS / f"ope_{campaign}.json").read_text())
-    b = json.loads((REPORTS / f"baseline_{campaign}.json").read_text())
-    truth = o["truth_bts_ctr"]
-
-    fig, ax = plt.subplots(1, 3, figsize=(16, 4.2))
-
-    names, vals, errs = [], [], []
-    for k, v in b["estimators"].items():
-        names.append(f"{k}\n(naive)")
-        vals.append(v["value"])
-        errs.append(0.0)
-    for k, v in o["estimators"].items():
-        names.append(k)
-        vals.append(v["value"])
-        errs.append(1.96 * v["se"] if np.isfinite(v.get("se", np.nan)) else 0.0)
-    colours = ["#c0392b"] * len(b["estimators"]) + ["#27ae60"] * len(o["estimators"])
-    ax[0].barh(names, vals, xerr=errs, color=colours, capsize=3)
-    ax[0].axvline(truth, color="k", ls="--", label=f"truth {truth:.5f}")
-    ax[0].set_title("naive (red) vs propensity-corrected (green)")
-    ax[0].legend()
-    ax[0].invert_yaxis()
-
-    rnd = pd.read_parquet(PARQUET / f"random_{campaign}.parquet")
-    bts = pd.read_parquet(PARQUET / f"bts_{campaign}.parquet")
-    w = importance_weights(rnd, target_policy(bts))
-    ax[1].hist(w, bins=60, color="#2980b9")
-    ax[1].set_yscale("log")
-    ax[1].set_title(f"importance weights\nmax {w.max():.1f}, ESS {o['weights']['ess_frac']:.1%}")
-    ax[1].set_xlabel("w = pi_target / pi_logging")
-
-    caps = [c for c in o["clipping"] if c["cap"] is not None]
-    ax[2].plot([c["cap"] for c in caps], [c["value"] for c in caps], "o-")
-    ax[2].axhline(truth, color="k", ls="--")
-    ax[2].set_xscale("log")
-    ax[2].set_title("clipping the weights only adds bias here")
-    ax[2].set_xlabel("clip cap")
-    ax[2].set_ylabel("IPS estimate")
-
-    fig.suptitle(f"Off-policy evaluation - campaign '{campaign}'")
-    fig.tight_layout()
-    p = REPORTS / f"ope_{campaign}.png"
-    fig.savefig(p, dpi=110)
-    plt.close(fig)
-    return p
 
 if __name__ == "__main__":
     main()
