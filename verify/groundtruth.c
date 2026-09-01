@@ -113,13 +113,15 @@ static Span obj(Span in, const char *key)
 static double two_sided_p(double z) { return erfc(fabs(z) / sqrt(2.0)); }
 
 /* qnorm(1 - alpha/2), by Newton on erfc. d/dz erfc(z/sqrt2) = -sqrt(2/pi)
- * exp(-z^2/2). Converges from 2.0 in a handful of steps for alpha = 0.05. */
+ * exp(-z^2/2). Converges from 2.0 in a handful of steps for alpha = 0.05.
+ * pi comes from acos rather than M_PI, which -std=c99 hides on glibc. */
 static double z_for(double alpha)
 {
+    const double pi = acos(-1.0);
     double z = 2.0;
     for (int i = 0; i < 60; i++) {
         double f = two_sided_p(z) - alpha;
-        double d = -sqrt(2.0 / M_PI) * exp(-0.5 * z * z);
+        double d = -sqrt(2.0 / pi) * exp(-0.5 * z * z);
         double step = f / d;
         z -= step;
         if (fabs(step) < 1e-16 * fabs(z)) break;
