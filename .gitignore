@@ -5,3 +5,8 @@ data/open_bandit_dataset/
 data/parquet/
 .env
 .env.local
+
+# build products of the verification harness
+verify/thresholds/target/
+verify/**/target/
+verify/gocheck/gocheck

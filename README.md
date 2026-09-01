@@ -113,9 +113,87 @@ interval [0.003131, 0.003464] misses the truth by 1.0 half-widths, because at ma
 weight 12,500 and ESS 0.16% the normal approximation behind the standard error is
 marginally anti-conservative. Tightening a threshold to catch that would mean
 picking the threshold by looking at the answer, so it stays documented; a
-bootstrap or empirical-Bernstein interval is the honest fix. Everything here also
-rests on one 7-day window from one retailer, and the BTS target policy is modelled
-as context-free but position-dependent, matching the Open Bandit benchmark.
+bootstrap or empirical-Bernstein interval is the honest fix. What tightening it
+would cost is measured rather than guessed in [the threshold
+sweep](#everything-here-is-recomputed-in-another-language) below: an ESS floor
+above 19,910 does get all seven scenarios right, and costs one or two correct
+decisions on the wider grid of scenarios the gate was never scored on.
+Everything here also rests on one 7-day window from one retailer, and the BTS
+target policy is modelled as context-free but position-dependent, matching the
+Open Bandit benchmark.
+
+## Everything here is recomputed in another language
+
+Every number above came out of one pipeline: pandas and numpy under `src/roo/`,
+writing JSON into `reports/`. Everything downstream reads that JSON, this README
+included, so a mistake in the pipeline had nothing to catch it. The self-checks
+CI already runs test that each estimator returns the right answer on hand-built
+data; they say nothing about the numbers actually published.
+
+So each published table is now rebuilt from a rawer layer of the same data by an
+implementation in another language, and CI fails if any two disagree. Two of
+those rawer layers were already in the repository without being used as one.
+`reports/eda_all.json` records per-position impression and click counts that sum
+to the headline table. `app_data/grid_all.json` records, for fifteen scenarios,
+the three scalars the gate decides on, which is one level below the gate table
+itself.
+
+| implementation | what it recomputes, and from what | agreement |
+|---|---|---|
+| [`verify/groundtruth.c`](verify/groundtruth.c) | the known-answer table from the per-position counts: totals, CTR, both Wilson intervals, the difference of proportions, z and p | 22 of 23 fields bit-identical, p value 2.8e-14 relative |
+| [`verify/gate.sql`](verify/gate.sql) | the gate table in SQLite, from the per-scenario diagnostics in `app_data/grid_all.json` | exact, 0.0e+00, on all 7 scenarios |
+| [`verify/gocheck`](verify/gocheck) | structure of all 7 published data files, then the gate table a second time | 7 of 7 files sound, gate exact |
+| [`verify/verify.R`](verify/verify.R) | the headline test in base R by two routes, plus an exact interval and a bootstrap the repository never had | exact to 1e-15, p value within 1.0e-14 |
+| [`verify/estimators.rb`](verify/estimators.rb) | every derived column of `ope_all.json` and `stress_all.json`, from its own estimate and standard error | exact, 0.0e+00 |
+| [`verify/readme.js`](verify/readme.js) | this README against the files: 65 table cells and 14 sentences that carry a number | every one matches |
+| [`verify/thresholds`](verify/thresholds) | whether the gate's two thresholds were fitted, over the entire threshold plane | see below |
+
+Run them all with [`./verify/verify.sh`](verify/verify.sh), which prints
+`7 passed, 0 failed, 0 skipped`. Each is skipped with a message if its toolchain
+is missing, so a partial install still runs the rest.
+
+**R puts an interval on a number this repo only ever stated as a point.** The
++42.77% lift has no interval anywhere above. Base R produces one two ways, a
+delta method on the log ratio and 200,000 parametric bootstrap draws, and gets
+[+38.63%, +47.03%] and [+38.66%, +47.08%], whose worst end differs by 0.57% of
+the interval width. It also computes the Clopper-Pearson exact intervals, which
+come out wider than the published Wilson ones as they have to, and it puts a
+number on the failure Limitations admits: the reverse direction's interval misses
+the truth by 1.0339 half-widths.
+
+**The Rust answers a question that was never asked.** `harness.py` says its two
+thresholds were not chosen by looking at which value made the answers come out
+right, and there was no way to check that, because the gate had only ever been
+run at one setting. The decision is a step function of the two thresholds, so
+the plane splits into 126 regions and enumerating one point per region is an
+exact answer; a brute force pass over 16,000,000 threshold pairs finds the same
+maxima. At the published 1% and 1,000 the gate scores 6 of 7 on the scenarios
+above, and 11 of 13 on the distinct scenarios in `app_data/grid_all.json`. Some
+setting does get all 7: any ESS floor above 19,910 and up to 367,933, which is
+4.76% of the plane. Across that whole region the wider set drops to 9 or 10 of
+13. The best any pair reaches on the wider set is 12 of 13, at a 5.98% mass
+limit and an ESS floor just above 196, and no single pair reaches both maxima.
+So the false accept in Limitations is fixable and the fix costs more than it
+buys, which is what "picking the threshold by looking at the answer" means in
+numbers.
+
+**Go found something nobody was looking for.** Two of the seven files are not
+valid JSON. Python writes bare `NaN` and `Infinity` for the direct method's
+missing standard error and for one interval width ratio that divides by zero,
+and no parser is obliged to accept either. Both are legitimate where they sit,
+so the check is that they appear nowhere else, along with duplicate keys,
+inverted intervals and negative counts.
+
+**The harness is itself checked.** CI corrupts `reports/harness_all.json`,
+requires the harness to reject it, restores it and requires a pass. A check that
+cannot fail is not evidence. Each implementation catches what it is responsible
+for and nothing more: moving one click between position slots is caught by C and
+R; nudging the published p value by C, R and JavaScript; widening a gate
+interval until it covers the truth by SQL, Go and Rust; raising the published
+gate score to 7 of 7 by SQL, Go, JavaScript and Rust; moving an IPS interval end
+by Ruby and JavaScript; telling one clipping row it clipped nothing by Ruby
+alone; writing a key twice by Go alone; and a stale ESS left in the README table
+by JavaScript alone.
 
 ## Demo
 
@@ -160,6 +238,7 @@ src/rsoo/   figure generation
 reports/    json results and the figures above
 app_data/   precomputed diagnostics for app.py, the Streamlit demo
 notes/      METHODS.md, the full write-up
+verify/     the published numbers, recomputed in seven other languages
 ```
 
 ## Data, author, licence

@@ -27,3 +27,46 @@ jobs:
 
       - name: lint
         run: uv run ruff check src
+
+  # Every number in the README came out of one pandas pipeline, so nothing
+  # downstream could ever have caught an error in it. This job recomputes them
+  # in seven other languages and then checks it can still fail.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install R if the runner does not already have it
+        run: |
+          command -v Rscript >/dev/null 2>&1 || {
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends r-base-core
+          }
+
+      # Not one skip: if a toolchain went missing the harness would quietly
+      # verify less than it says it does.
+      - name: recompute the published numbers in seven other languages
+        run: |
+          set -o pipefail
+          ./verify/verify.sh | tee /tmp/verify.log
+          grep -qx '7 passed, 0 failed, 0 skipped' /tmp/verify.log
+
+      # A check that cannot fail is not evidence. Raise the published gate score
+      # from 6 of 7 to 7 of 7 and the harness has to notice.
+      - name: the harness must reject a corrupted results file
+        run: |
+          sed -i 's/"decisions_correct": 6,/"decisions_correct": 7,/' reports/harness_all.json
+          if ./verify/verify.sh > /tmp/corrupt.log 2>&1; then
+            echo "the harness passed on a corrupted file, so it is checking nothing"
+            cat /tmp/corrupt.log
+            exit 1
+          fi
+          echo "rejected:"
+          tail -1 /tmp/corrupt.log
+
+      - name: and must pass again once the file is restored
+        run: |
+          set -o pipefail
+          git checkout -- reports/harness_all.json
+          ./verify/verify.sh | tee /tmp/restored.log
+          grep -qx '7 passed, 0 failed, 0 skipped' /tmp/restored.log
