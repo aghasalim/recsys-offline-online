@@ -1,4 +1,4 @@
-"""Milestone 1a - turn 11 GB of CSV into a few hundred MB of Parquet.
+"""Turn 11 GB of CSV into a few hundred MB of Parquet.
 
 The raw Open Bandit Dataset ships 89 columns per row, 80 of which are a
 user-item affinity vector. Every downstream step re-reads the logs, and a

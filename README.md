@@ -161,7 +161,7 @@ Raw logs and the derived Parquet are gitignored. Stack and roadmap in
 ## Layout
 
 ```
-src/roo/    prepare, eda, baseline, ope, stress, harness, one per milestone
+src/roo/    prepare, eda, baseline, ope, stress, harness, one per stage
 src/rsoo/   figure generation
 reports/    json results and the figures above
 app_data/   precomputed diagnostics for app.py, the Streamlit demo

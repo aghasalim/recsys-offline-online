@@ -1,6 +1,6 @@
-"""Milestone 4 - the regimes where off-policy evaluation stops working.
+"""The regimes where off-policy evaluation stops working.
 
-Milestone 3 came out clean: every estimator within 2% of truth, weights capped
+ope.py came out clean: every estimator within 2% of truth, weights capped
 at 9.64, clipping pointless. That is not a general result about off-policy
 evaluation, it is a fact about evaluating FROM uniform-random logs, which is
 the easy direction. Three stress tests, each with a known answer:

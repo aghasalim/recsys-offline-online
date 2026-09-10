@@ -1,4 +1,4 @@
-"""Milestone 1 - establish the ground truth, then check it is usable.
+"""Establish the ground truth, then check it is usable.
 
 This project only means anything if there is a true answer to score against.
 Open Bandit Dataset provides one: ZOZOTOWN ran two policies on live traffic,

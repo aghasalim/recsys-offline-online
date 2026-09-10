@@ -1,13 +1,13 @@
-"""Milestone 3 - off-policy estimators that use the logged propensities.
+"""Off-policy estimators that use the logged propensities.
 
-Milestone 2's naive estimators were wrong by -30% to +54% because they ignored
+The naive estimators in baseline.py were wrong by -30% to +54% because they ignored
 the one thing the logs actually record: the probability with which each action
 was taken. Reweighting by that probability turns "what happened under the
 logging policy" into "what would happen under the target policy".
 
   IPS    weight every logged reward by pi_target(a|x) / pi_logging(a|x).
-         Unbiased, and textbook-notorious for its variance. I predicted in
-         milestone 1 that the weights would be heavy-tailed here, and that was
+         Unbiased, and textbook-notorious for its variance. I predicted while writing eda.py
+         that the weights would be heavy-tailed here, and that was
          wrong: they top out at 9.64. Uniform logging gives every action
          probability 1/80, so a weight cannot exceed 80 * max pi_target, and
          BTS's most concentrated action only reaches 0.1205. The variance

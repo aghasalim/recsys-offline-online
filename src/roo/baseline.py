@@ -1,7 +1,7 @@
-"""Milestone 2 - the naive offline evaluation, and how wrong it is.
+"""The naive offline evaluation, and how wrong it is.
 
 The task is deliberately narrow so that it can be graded: using ONLY the
-uniform-random logs, estimate the online CTR of the BTS policy. Milestone 1
+uniform-random logs, estimate the online CTR of the BTS policy. eda.py
 measured that answer directly from BTS's own logs (0.00495), so every estimate
 here has a right answer to be scored against.
 
@@ -21,7 +21,7 @@ Three naive estimators, each one a thing real teams actually ship:
 
 A supervised ranking metric (AUC) is reported next to them on purpose. AUC
 describes the click model; it says nothing about the value of the policy built
-from it, and the point of this milestone is that the two can disagree.
+from it, and the point of this module is that the two can disagree.
 
 Splitting is by TIME, not at random: the logs are 7 consecutive days, and a
 random split lets the model see the future of the same campaign.

@@ -1,6 +1,6 @@
-"""Milestone 5 - an evaluation harness that refuses to answer when it cannot.
+"""An evaluation harness that refuses to answer when it cannot.
 
-Milestone 4 showed that off-policy evaluation fails in a specific, nasty way:
+stress.py showed that off-policy evaluation fails in a specific, nasty way:
 the estimate comes back precise, the confidence interval comes back narrow, and
 both are wrong by 90%. Nothing about the output looks suspicious. The failure is
 only visible in a diagnostic nobody computes.
@@ -11,7 +11,7 @@ returns a value only when the checks pass. When they do not, it returns
 a slide, and a wrong one can.
 
 THRESHOLDS, AND WHY THEY ARE NOT TUNED
-Milestone 4 measured that the relative error tracks the target policy's
+stress.py measured that the relative error tracks the target policy's
 probability mass on unlogged actions almost exactly (17.7% mass -> -19.0%
 error, 88.6% -> -89.6%). So the threshold is not a knob to be fitted, it is
 whatever error you are willing to tolerate: allow 1% unlogged mass if you can

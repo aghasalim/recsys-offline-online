@@ -92,7 +92,7 @@ the decision being made.
 
 ## 5. I predicted heavy-tailed weights. I was wrong.
 
-At the end of milestone 1 I wrote that BTS concentrates 12% of impressions on
+While writing the exploratory pass I wrote that BTS concentrates 12% of impressions on
 one item where random spreads 1.25% each, so importance weights would be
 heavy-tailed and IPS would blow up.
 
@@ -119,13 +119,13 @@ Two things I made myself write down rather than gloss:
 - All four corrected estimators agree to within 0.1 points, which means **this
   benchmark cannot discriminate between them.** "DR beats IPS" would not be
   supported by this evidence.
-- The direct method scores +1.6% here and −4.1% in milestone 2. That is a
+- The direct method scores +1.6% here and −4.1% in the naive baseline. That is a
   training-set-size difference (7 days vs 5), not a method difference.
   Comparing those two numbers directly would be a mistake.
 
 ## 7. Making it hard on purpose
 
-Milestone 3 came out clean, which was a warning rather than a result. So I built
+The propensity correction came out clean, which was a warning rather than a result. So I built
 the regimes it had avoided:
 
 **Direction.** Swap which policy did the logging: max weight goes 9.6 → **12,500**

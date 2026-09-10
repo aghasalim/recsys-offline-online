@@ -40,7 +40,7 @@ flowchart TB
     F -->|−30% to +54%| I{{graded against<br/>the known answer}}
     G -->|+1.6% to +1.7%| I
     B --> I
-    subgraph J["The gate, milestone 5"]
+    subgraph J["The gate, section 5"]
         K[unlogged target mass]
         L[effective sample size]
         M[effective clicks]
@@ -158,7 +158,7 @@ true value. That is the correction doing exactly what the theory says.
 
 ### I predicted the weights would be heavy-tailed. They are not.
 
-Milestone 1 ended by noting that BTS puts 12% of its impressions on one item
+Section 1 ended by noting that BTS puts 12% of its impressions on one item
 where random puts 1.25% on each, and I said importance weights over that gap
 would be heavy-tailed and wreck IPS. Measured, the largest weight in 1.37
 million rows is **9.64**.
@@ -196,14 +196,14 @@ means this benchmark **cannot tell them apart**: it is a well-behaved problem
 with 80 actions, full support, and uniform logging. Any claim that DR beats IPS
 would not be supported by this evidence.
 
-Note also that the direct method scores +1.6% here versus −4.1% in milestone 2.
-That is not a method difference: milestone 2 fit it on 5 days and this fits it
+Note also that the direct method scores +1.6% here versus −4.1% in section 2.
+That is not a method difference: section 2 fit it on 5 days and this fits it
 on all 7. Comparing those two numbers directly would be comparing training set
 sizes and calling it an estimator comparison.
 
 ## 4. Where it breaks
 
-Milestone 3 was clean because evaluating **from** uniform-random logs is the
+Section 3 was clean because evaluating **from** uniform-random logs is the
 easy direction. Nobody has those logs in production, you have logs from the
 ranker you already deployed. Three stress tests, each still graded against a
 known answer.
@@ -278,7 +278,7 @@ confidence interval will not tell you.
 
 ## 5. The deliverable is a gate, not a model
 
-Milestone 4's failure mode is nasty because the output looks healthy: precise
+The failure mode in section 4 is nasty because the output looks healthy: precise
 estimate, narrow interval, both wrong by 90%. So `harness.audit()` returns a
 value **only** when the checks pass. Otherwise it returns `value=None` and the
 reasons, a withheld number cannot be pasted into a slide, a wrong one can.
@@ -294,7 +294,7 @@ else:
     print(a.value, a.ci95)
 ```
 
-**The thresholds are not fitted.** Milestone 4 measured that relative error
+**The thresholds are not fitted.** Section 4 measured that relative error
 tracks unlogged mass almost 1:1, so the limit is simply the bias you are willing
 to accept (default 1%). The ESS floor is an absolute count, not a fraction
 0.16% ESS is fine on 12M rows and fatal on 100k, set to the usual ~1,000 rule
@@ -397,7 +397,7 @@ Paragraphs kept from the earlier, longer README.
 
 Built by a third-year Applied Computer Science (AI) student.
 
-> **Status: complete.** All six milestones done. Every number here was produced
+> **Status: complete.** Every section above is done. Every number here was produced
 > by the code in this repo; the decision trail, including the things I got
 > wrong, is in [NOTES.md](../NOTES.md). The project ends on one open problem, stated
 > rather than hidden: a confidence interval that survives heavy-tailed weights.
