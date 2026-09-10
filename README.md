@@ -7,9 +7,10 @@ policy at the same time, and recorded the probability of every action taken, so
 both policies' true online CTR is measured. The whole project is one question:
 using only the random logs, can you work out how well BTS performs?
 
-Every number here was produced by the code in this repo, and each one is also
-recomputed from a rawer layer of the same data by independent implementations in
-`verify/`, with CI failing the build if any of them disagree. Full write-up in
+Every number below came out of this repo, and then got derived a second time
+from a rawer layer of the same logs by code in C, Rust, Go, R, SQL, Ruby and
+JavaScript that shares nothing with the Python. `verify/` runs both and CI
+refuses the build when they part company. Full write-up in
 [notes/METHODS.md](notes/METHODS.md), decision trail with the wrong turns kept in
 at [NOTES.md](NOTES.md).
 
@@ -166,21 +167,19 @@ src/rsoo/   figure generation
 reports/    json results and the figures above
 app_data/   precomputed diagnostics for app.py, the Streamlit demo
 notes/      METHODS.md, the full write-up
-verify/     the published numbers, recomputed independently
+verify/     seven languages re-deriving the tables above from the raw logs
 ```
 
-## Data, author, licence
+## Data and licence
 
 [Open Bandit Dataset](https://research.zozo.com/data.html) (ZOZO Research),
 released for research use.
 
-Built by Aghasalim Mustafazada, a third-year Applied Computer Science (AI)
-student. My code is MIT, see [LICENSE](LICENSE).
+My code is MIT, see [LICENSE](LICENSE).
 
 ## References
 
-The papers and sources this implementation follows. Each one is here because
-the code uses the method, the dataset or the metric it describes.
+The three papers the estimators and the framing come from.
 
 - **Dudík, Langford, Li. Doubly Robust Policy Evaluation and Learning. ICML 2011.** [arXiv:1103.4601](https://arxiv.org/abs/1103.4601) the doubly robust estimator.
 - **Swaminathan, Joachims. The Self-Normalized Estimator for Counterfactual Learning. NeurIPS 2015.** SNIPS, the self normalised variant.
