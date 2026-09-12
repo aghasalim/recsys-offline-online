@@ -51,7 +51,7 @@ jobs:
           ./verify/verify.sh | tee /tmp/verify.log
           grep -qx '7 passed, 0 failed, 0 skipped' /tmp/verify.log
 
-      # A check that cannot fail is not evidence. Raise the published gate score
+      # A check that cannot fail is not a check. Raise the published gate score
       # from 6 of 7 to 7 of 7 and the harness has to notice.
       - name: the harness must reject a corrupted results file
         run: |

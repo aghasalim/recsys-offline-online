@@ -1,7 +1,7 @@
 """House plot style. Import before plotting, it works by side effect.
 
-One place to change how every figure in the repo looks, so the plots in the
-README read as one set rather than eight unrelated ones.
+Vendored from aghasalim/flash-attention-from-scratch, bench/style.py, so the figures across this
+portfolio read as one set. Edit the source copy, not this one.
 """
 from __future__ import annotations
 
