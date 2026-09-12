@@ -1,7 +1,8 @@
 """House plot style. Import before plotting, it works by side effect.
 
-Vendored from aghasalim/flash-attention-from-scratch, bench/style.py, so the figures across this
-portfolio read as one set. Edit the source copy, not this one.
+Vendored from aghasalim/flash-attention-from-scratch, bench/style.py, so
+the figures across this portfolio read as one set. Edit the source copy,
+not this one.
 """
 from __future__ import annotations
 
