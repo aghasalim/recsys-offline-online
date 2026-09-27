@@ -1,5 +1,7 @@
 # Offline metrics vs online lift, checking recommender evaluation against a known answer
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23003666.svg)](https://doi.org/10.5281/zenodo.23003666)
+
 Offline recommender metrics decide whether a policy ships, and they are usually
 validated against nothing. The **Open Bandit Dataset** (ZOZOTOWN) logged real
 production traffic under a uniform-random policy and a Bernoulli Thompson Sampling
