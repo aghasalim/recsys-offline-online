@@ -24,7 +24,7 @@ at [NOTES.md](NOTES.md).
 | Bernoulli TS | 12,357,200 | 61,208 | 0.00495 | [0.00491, 0.00499] |
 
 **BTS is +42.77% better than random**, p = 2.5e-166. That is the target every
-estimator has to hit. Four fairness assumptions get checked rather than cited,
+estimator has to hit. Four fairness assumptions get checked instead of cited,
 including that both policies ran the same 7 days, so BTS's higher CTR cannot just
 be a better week: [notes/METHODS.md](notes/METHODS.md#1-the-known-answer).
 
@@ -116,8 +116,8 @@ interval [0.003131, 0.003464] misses the truth by 1.0 half-widths, because at ma
 weight 12,500 and ESS 0.16% the normal approximation behind the standard error is
 marginally anti-conservative. Tightening a threshold to catch that would mean
 picking the threshold by looking at the answer, so it stays documented; a
-bootstrap or empirical-Bernstein interval is the honest fix. What tightening it
-would cost is measured rather than guessed: an ESS floor above 19,910 does get
+bootstrap or empirical-Bernstein interval is the real fix. What tightening it
+would cost is measured instead of guessed: an ESS floor above 19,910 does get
 all seven scenarios right, and costs one or two correct decisions on the wider
 grid of scenarios the gate was never scored on.
 Everything here also rests on one 7-day window from one retailer, and the BTS
