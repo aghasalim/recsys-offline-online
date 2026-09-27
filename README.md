@@ -24,7 +24,7 @@ at [NOTES.md](NOTES.md).
 | Bernoulli TS | 12,357,200 | 61,208 | 0.00495 | [0.00491, 0.00499] |
 
 **BTS is +42.77% better than random**, p = 2.5e-166. That is the target every
-estimator has to hit. Four fairness assumptions get checked instead of cited,
+estimator has to hit. Four fairness assumptions are checked in the data,
 including that both policies ran the same 7 days, so BTS's higher CTR cannot just
 be a better week: [notes/METHODS.md](notes/METHODS.md#1-the-known-answer).
 
@@ -70,8 +70,7 @@ this benchmark cannot separate them.
 Evaluating from uniform-random logs is the easy direction and nobody has those
 logs in production, so: three stress tests, each still graded against a known
 answer. Reversing the direction takes the largest weight from 9.6 to 12,500 and
-effective sample size from 26.8% to 0.16%. Shrinking the data keeps the intervals
-honest. Deleting the highest-CTR items from the logs is the one that breaks it,
+effective sample size from 26.8% to 0.16%. Shrinking the data keeps the intervals' coverage correct. Deleting the highest-CTR items from the logs is the one that breaks it,
 and ESS does not merely miss that failure, it moves the wrong way: at 40 items
 removed the estimate is off by −89.6% and ESS has gone up to 47.6%. What does
 track the error, at no cost, is the target policy's probability mass on actions
@@ -117,7 +116,7 @@ weight 12,500 and ESS 0.16% the normal approximation behind the standard error i
 marginally anti-conservative. Tightening a threshold to catch that would mean
 picking the threshold by looking at the answer, so it stays documented; a
 bootstrap or empirical-Bernstein interval is the real fix. What tightening it
-would cost is measured instead of guessed: an ESS floor above 19,910 does get
+would cost is measured: an ESS floor above 19,910 does get
 all seven scenarios right, and costs one or two correct decisions on the wider
 grid of scenarios the gate was never scored on.
 Everything here also rests on one 7-day window from one retailer, and the BTS
