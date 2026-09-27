@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use this work, please cite it as below.
+title: "Offline metrics vs online lift, checking recommender evaluation against a known answer"
+abstract: "Offline recommender metrics vs true online lift, graded against a known answer (Open Bandit Dataset). Ends in an evaluation gate that refuses to report a number when the diagnostics say it would be meaningless."
+type: software
+authors:
+  - family-names: Mustafazada
+    given-names: Aghasalim
+    orcid: "https://orcid.org/0009-0001-8746-4582"
+    affiliation: "Howest University of Applied Sciences"
+repository-code: "https://github.com/aghasalim/recsys-offline-online"
+url: "https://aghasalim.github.io/"
+license: MIT
+keywords:
+  - contextual bandits
+  - counterfactual evaluation
+  - machine learning
+  - off policy evaluation
+  - recommender systems
+  - open bandit dataset
