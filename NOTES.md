@@ -226,3 +226,7 @@ is the open problem the project ends on.
 - The README said "all four corrected estimators agree" above a table with
   three rows. The fourth, the direct method fitted on all 7 days (+1.6%), is
   now in the table, and `verify/readme.js` checks that row too.
+- `harness.py` computed `effective_clicks` under a comment calling it the
+  binding constraint, and the METHODS diagram drew it inside the gate, but the
+  gate never checked it. Gating on it now would change the published 6 of 7, so
+  I fixed the comment and the diagram to say it is reported, not gated.

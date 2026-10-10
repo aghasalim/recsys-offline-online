@@ -78,9 +78,11 @@ def audit(logs: pd.DataFrame, pi: pd.DataFrame, *,
     n_eff = ess(w)
     ci_ratio = (e["ci95"][1] - e["ci95"][0]) / e["value"] if e["value"] > 0 else np.inf
 
-    # For a 0.5% click rate, ESS on the weights is not the binding constraint -
-    # the effective number of POSITIVE events is. 1,890 effective rows sounds
-    # comfortable and is 9 expected clicks.
+    # For a 0.5% click rate, ESS on the weights overstates how much evidence
+    # there is - the effective number of POSITIVE events matters more. 1,890
+    # effective rows sounds comfortable and is 9 expected clicks. This is only
+    # reported in the diagnostics; the gate below does not use it, and the
+    # published gate results were produced without it.
     eff_clicks = float(n_eff * r.mean())
     diagnostics = {
         "n_rows": int(len(logs)), "ess": n_eff, "ess_frac": n_eff / len(logs),
