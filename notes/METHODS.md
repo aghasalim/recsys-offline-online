@@ -43,7 +43,7 @@ flowchart TB
     subgraph J["The gate, section 5"]
         K[unlogged target mass]
         L[effective sample size]
-        M[effective clicks]
+        M[effective clicks<br/>reported, not gated]
     end
     G --> J
     J -->|checks pass| N[report value + interval]
