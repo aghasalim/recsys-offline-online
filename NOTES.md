@@ -217,3 +217,9 @@ is the open problem the project ends on.
 - Every self-check asserts a metric **fails** on a deliberately wrong input, not
   just that it runs. `aupro`-style "returns a number" tests would have passed
   through all of the bugs above.
+
+## 12. Audit fixes, 2026-10-11
+
+- `ope.py`'s `demo()` never ran `dr()` or `cross_fitted_dr()`, the two
+  estimators the project leans on most. It now checks both recover the true
+  value 1.0 on the two-arm data, `dr()` with a deliberately wrong click model.
