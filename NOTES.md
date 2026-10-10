@@ -223,3 +223,6 @@ is the open problem the project ends on.
 - `ope.py`'s `demo()` never ran `dr()` or `cross_fitted_dr()`, the two
   estimators the project leans on most. It now checks both recover the true
   value 1.0 on the two-arm data, `dr()` with a deliberately wrong click model.
+- The README said "all four corrected estimators agree" above a table with
+  three rows. The fourth, the direct method fitted on all 7 days (+1.6%), is
+  now in the table, and `verify/readme.js` checks that row too.

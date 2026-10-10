@@ -135,14 +135,15 @@ const corrected = (key) => {
     cells: {
       estimate: fixed(e.value, 5),
       "error vs truth": pct(e.rel_error, 1),
-      "95% CI": interval(e.ci95[0], e.ci95[1], 5),
-      "covers truth": e.truth_inside_ci ? "yes" : "no",
+      // the direct method has no interval, so the JSON holds NaN (null here)
+      "95% CI": e.ci95[0] === null ? "n/a" : interval(e.ci95[0], e.ci95[1], 5),
+      "covers truth": e.truth_inside_ci === null ? "n/a" : e.truth_inside_ci ? "yes" : "no",
     },
   };
 };
 checkTable("what the propensity correction fixes",
   ["estimator", "estimate", "error vs truth", "95% CI", "covers truth"],
-  ["ips", "snips", "dr_crossfit"].map(corrected));
+  ["ips", "snips", "dr_crossfit", "direct_method"].map(corrected));
 
 // 4. the gate
 checkTable("the gate", ["scenario", "gate", "true error", "unlogged mass", "ESS", "correct"],
