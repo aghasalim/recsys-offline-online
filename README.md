@@ -59,6 +59,7 @@ actually making.
 | IPS | 0.00504 | **+1.7%** | [0.00480, 0.00527] | yes |
 | SNIPS | 0.00503 | **+1.6%** | [0.00479, 0.00527] | yes |
 | doubly robust (cross-fitted) | 0.00503 | **+1.6%** | [0.00480, 0.00527] | yes |
+| direct method (all 7 days) | 0.00503 | **+1.6%** | n/a | n/a |
 
 The errors went from a range of −30% to +54% down to under 2%, and every interval
 covers the truth. I expected heavy-tailed weights and there aren't any. Uniform
