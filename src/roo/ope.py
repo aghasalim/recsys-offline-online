@@ -213,6 +213,12 @@ def demo() -> None:
     # weights are 0 or 2, so ESS is about half the rows
     assert 0.4 < ess(w) / n < 0.6, ess(w) / n
 
+    # DR with a wrong click model (0.5 everywhere) is rescued by the IPS residual
+    half = np.full(n, 0.5)
+    assert abs(dr(w, r, half, half)["value"] - 1.0) < 0.05, dr(w, r, half, half)
+    # cross-fitted DR, with q learned out of fold over time
+    assert abs(cross_fitted_dr(df, pi, w)["value"] - 1.0) < 0.05, cross_fitted_dr(df, pi, w)
+
     # a target identical to the logging policy must recover the logged mean
     pi_same = pd.DataFrame({"position": [1, 1], "item_id": [0, 1], "prob": [0.5, 0.5]})
     w_same = importance_weights(df, pi_same)
