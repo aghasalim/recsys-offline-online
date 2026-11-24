@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.jpg" alt="Line drawing of two gauges whose needles disagree, joined by a closed gate" width="100%"></p>
+
 # Offline metrics vs online lift, checking recommender evaluation against a known answer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23003666.svg)](https://doi.org/10.5281/zenodo.23003666)
@@ -16,6 +18,23 @@ code that shares nothing with the Python. `verify/` runs both, and CI fails the
 build if they disagree. The full write-up is in
 [notes/METHODS.md](notes/METHODS.md), and my notes, wrong turns included, are in
 [NOTES.md](NOTES.md).
+
+<details>
+<summary>Contents</summary>
+
+- [The known answer](#the-known-answer)
+- [What the shortcuts get wrong](#what-the-shortcuts-get-wrong)
+- [What the propensity correction fixes](#what-the-propensity-correction-fixes)
+- [Where it breaks](#where-it-breaks)
+- [The deliverable is a gate, not a model](#the-deliverable-is-a-gate-not-a-model)
+- [Limitations](#limitations)
+- [Demo](#demo)
+- [Reproducing](#reproducing)
+- [Layout](#layout)
+- [Data and licence](#data-and-licence)
+- [References](#references)
+
+</details>
 
 ## The known answer
 
