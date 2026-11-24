@@ -1,5 +1,3 @@
-<p align="center"><img src="assets/banner.jpg" alt="Line drawing of two gauges whose needles disagree, joined by a closed gate" width="100%"></p>
-
 # Offline metrics vs online lift, checking recommender evaluation against a known answer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23003666.svg)](https://doi.org/10.5281/zenodo.23003666)
